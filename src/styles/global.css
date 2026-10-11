@@ -1,0 +1,2503 @@
+/*
+ * Base for showcase-salon.
+ *
+ * Deliberately plain. The palette, the type and the layout are decided per
+ * variant from the brief — nothing in this file is a design suggestion, and the
+ * default look must never be mistaken for a direction somebody chose.
+ *
+ * What it does establish is the token vocabulary the components expect, so that
+ * a variant fills these in rather than inventing new names. One rule matters
+ * more than the rest and is easy to get wrong:
+ *
+ *   --accent        the FILL. Buttons, bars, badges — anything ink sits ON.
+ *   --accent-ink    the same signal as TEXT. On a light ground it is a step
+ *                   DARKER; on a dark ground it inverts. A component that puts
+ *                   words on --accent is a contrast bug, not a preference.
+ *
+ * Surfaces run in one direction: --paper is the MIDDLE tone, --panel is LIFTED
+ * above it, --paper-deep is RECESSED below it. "Deep" means recessed, not dark.
+ *
+ * The preview shell drives --accent live from the studio bar, so a variant's
+ * brand colour must route through this property and everything derived from it
+ * should be derived in CSS rather than hard-coded — otherwise the picker moves
+ * one colour and leaves five behind.
+ */
+
+/*
+ * Edges, entrances, and the host class a block-scope ground needs. Kept in its
+ * own file because it is a catalogue rather than a base: see
+ * `docs/surface.md` of @jtakeit/astro.
+ */
+@import './surface.css';
+
+:root {
+  --paper: #f5f0e8;
+  /* Derived: see the note on tokens above and Layout.astro's `--lift`. */
+  --lift: #ffffff;
+  --panel: color-mix(in srgb, var(--paper) 88%, var(--lift));
+  --paper-deep: #ebe4d9;
+
+  --ink: #141311;
+  --ink-quiet: #6b655d;
+  --line: #dcd4c8;
+
+  --accent: #b5673b;
+  /* The accent as text: a step towards the ink, following a live accent. */
+  --accent-ink: color-mix(in srgb, var(--accent) 70%, var(--ink));
+  --danger: #b3261e;
+
+  /*
+   * How wide things are allowed to be — two different questions with two
+   * different answers, and collapsing them is why a page built at 1440 looks
+   * stranded on a 27-inch monitor.
+   *
+   *   --shell     the layout's outer width. It GROWS with the screen.
+   *   --measure   how long a line of text may get. It does NOT: past about 65
+   *               characters the eye loses the start of the next line.
+   *
+   * A shell capped at 1200px is 47% of a 2560px screen, and everything inside
+   * it reads as an island. Cap the measure instead and let the composition use
+   * the space. See the Composition floor in the astro-kit skill.
+   */
+  --shell: min(92rem, 92vw);
+  --measure: 34rem;
+
+  --r-1: 4px;
+  --r-2: 8px;
+  --r-3: 14px;
+  --r-4: 22px;
+
+  --dur: 180ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /*
+   * The surface: the ground a page is printed on, the edge a block is drawn
+   * with, and how a block arrives. Three catalogues, one reference —
+   * `docs/surface.md` of @jtakeit/astro — and the same discipline as
+   * the rest of this file: a component reads these names rather than typing a
+   * value of its own.
+   *
+   * --pattern-ink is the only colour here on purpose. Everything the ground
+   * draws is that one token at that one opacity, which is what keeps a
+   * background inside the variant's palette instead of beside it. <Pattern>
+   * sets its own geometry per ground; these are the parts a variant tunes.
+   */
+  --pattern-ink: var(--ink);
+
+  --edge-ink: var(--line);
+  --edge-weight: 1px;
+  /* How much of a corner `corners` draws, and how deep `notch` cuts. */
+  --edge-corner: 18px;
+  --edge-offset: 7px;
+
+  --reveal-dur: 0.7s;
+  --reveal-dist: 24px;
+  /* Between one staggered child and the next. Past ~120ms a list reads as slow. */
+  --reveal-step: 80ms;
+
+  /*
+   * What a photograph is printed in. Six treatments in <Shot>, all built from
+   * these four and nothing else — see `docs/photos.md` of @jtakeit/astro.
+   *
+   * --photo-shadow carries the ground's hue on purpose. A neutral black in the
+   * shadows of a photograph on a warm page turns them grey, which is the same
+   * fault as a neutral shadow under a card and reads the same way: dirty rather
+   * than photographed.
+   */
+  --photo-shadow: color-mix(in srgb, var(--ink) 78%, var(--accent));
+  --photo-light: var(--paper);
+  --photo-ink: var(--accent);
+  /* What `recede` veils a picture with, so copy can sit on it. */
+  --photo-veil: var(--paper);
+  --photo-amount: 1;
+
+  /*
+   * The hand.
+   *
+   * How far off square something laid down by a person sits. Measured off the
+   * sites that do this well, it is ±3–6°: past about 8° it stops reading as a
+   * hand and starts reading as a template, and the difference between a page
+   * that looks made and one that looks generated is that single number.
+   *
+   * It is a token because it has to be the *same* number everywhere on a page.
+   * Two elements at two angles nobody chose is the thing that makes a
+   * composition look accidental rather than casual.
+   */
+  --tilt: 4deg;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/*
+ * `hidden` means hidden, whatever the element's class says.
+ *
+ * The browser's own `[hidden] { display: none }` loses to any class that sets
+ * `display` — and every script here shows and hides by the attribute: the
+ * booking form's fields, its «you are booked» panel, the lead form's answer. A
+ * design pass that gave `.field` a grid put an empty «ви записані» panel on
+ * the page before anybody had booked (an agent's rehearsal, 30 September
+ * 2026). Important, because it is the one rule that must win.
+ */
+[hidden] {
+  display: none !important;
+}
+
+/*
+ * An in-page link is an instant jump unless told otherwise, and on a long
+ * landing page a jump reads as a page reload: the visitor loses the thread and
+ * often scrolls back up to check what happened. Smooth scrolling is the
+ * expected behaviour here, and it is switched off wholesale for anyone who
+ * asked for less motion.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/*
+ * Where a link lands. Without this the target's border box goes to the top of
+ * the screen — which on a section with generous top padding means arriving at
+ * an empty screen, with the heading the visitor came for still below the fold.
+ * Every anchor target sets its own offset: a positive one to keep air above a
+ * panel's visible edge, a negative one to pull past padding that carries no
+ * meaning. See the Composition floor in the astro-kit skill.
+ */
+[id] {
+  scroll-margin-block-start: 1.5rem;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* Nothing on the page scrolls sideways. Wide things scroll inside their own
+     container; the body never does. */
+  overflow-x: hidden;
+}
+
+img,
+picture,
+svg,
+video {
+  max-inline-size: 100%;
+}
+
+a {
+  color: var(--accent-ink);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/*
+ * Autofill. Chrome and Safari repaint a filled field with their own background
+ * and their own text colour, which on any palette that is not white turns a
+ * designed form into a white-and-yellow one the moment the browser helps. There
+ * is no property to switch it off: the background has to be covered by an inset
+ * shadow, and the text colour set through -webkit-text-fill-color, which wins
+ * over `color`. The long transition is the standard trick for the repaint that
+ * fires on submit.
+ *
+ * These are the tokens the field itself uses. A variant that gives its inputs a
+ * different surface overrides this rule with the same two properties rather than
+ * deleting it.
+ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: var(--ink);
+  -webkit-box-shadow: 0 0 0 100vmax var(--paper-deep) inset;
+  box-shadow: 0 0 0 100vmax var(--paper-deep) inset;
+  caret-color: var(--ink);
+  transition: background-color 100000s ease-in-out 0s;
+}
+
+/* Visible keyboard focus is a floor, not a feature. */
+:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 2px;
+}
+
+/*
+ * Type scales with the screen and then stops. A bare vw is unbounded and a
+ * fixed rem never grows — clamp() is the whole answer, and a heading that is
+ * the same size on a laptop and on a 27-inch monitor is the commonest sign
+ * that nobody opened the page wide.
+ */
+h1 {
+  font-size: clamp(2rem, 1.2rem + 3vw, 4.5rem);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.btn,
+.booking__next {
+  padding: 0.75rem 1.5rem;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--r-2);
+  cursor: pointer;
+  transition: filter var(--dur) var(--ease);
+}
+
+.btn:hover,
+.booking__next:hover {
+  filter: brightness(1.08);
+}
+
+.btn:disabled,
+.booking__next:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/*
+ * Reduced motion means the finished state, never a broken one. The catalogue in
+ * surface.css lands each of its own entrances in the right finished place; this
+ * is the floor under everything else.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── the page's sections ─────────────────────────────────────────────────────
+ *
+ * A starting point, not a design. `Blocks.astro` renders whatever shape the
+ * content document has, and this gives it a readable measure, some air and a
+ * heading scale so it can be looked at before anybody has styled it. The design
+ * pass replaces all of it; what it must not remove is the annotation, which
+ * lives in the markup rather than here.
+ */
+
+.hero,
+.band {
+  padding: clamp(3rem, 8vw, 7rem) 1.25rem;
+}
+
+.hero__inner,
+.band__inner {
+  width: var(--shell);
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.band:nth-of-type(even) {
+  background: var(--paper-deep);
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-quiet);
+}
+
+.lead {
+  max-width: var(--measure);
+  margin: 1rem 0 0;
+  font-size: clamp(1.0625rem, 2.4vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--ink-quiet);
+}
+
+.quiet {
+  margin: 0.25rem 0 0;
+  color: var(--ink-quiet);
+}
+
+.prose {
+  max-width: var(--measure);
+  margin-top: 1rem;
+  line-height: 1.7;
+}
+
+.prose > * + * {
+  margin-top: 0.85em;
+}
+
+/*
+ * A picture in a body, and pictures side by side.
+ *
+ * These two class names are the whole of what a post's pictures can look like,
+ * and `figures.mjs` is what makes them out of plain markdown: one image alone
+ * in a paragraph is a figure, several in *one* paragraph are a row, and the
+ * caption is markdown's own title slot.
+ *
+ * Restyle them. Do not invent a third — the point of a small named set is that
+ * what a body can look like was decided once by the kit rather than again by
+ * every site, and the editor can only offer what exists here.
+ */
+.fl-figure {
+  margin: 2rem 0;
+}
+
+.fl-figure img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  border-radius: var(--radius, 0);
+}
+
+.fl-figure figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ink-quiet);
+}
+
+/*
+ * A row wraps rather than shrinking past legibility: three photographs on a
+ * phone are three photographs, not three stamps. `--3` and `--4` say how many
+ * were asked for; how many actually fit is the screen's to decide.
+ */
+.fl-row {
+  display: grid;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  margin: 2rem 0;
+}
+
+.fl-row .fl-figure {
+  margin: 0;
+}
+
+/* Two is the one count that must not wrap on a small screen: a pair is a
+   comparison, and a comparison stacked is two pictures. */
+.fl-row--2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.actions {
+  margin: 1.75rem 0 0;
+}
+
+.items {
+  display: grid;
+  gap: 1.5rem clamp(1.5rem, 3vw, 2.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* An edge needs somewhere to sit: a card with no padding gets a line hard
+   against its text. The design decides the real value; this keeps the starting
+   point honest. */
+.item[data-edge] {
+  padding: 1.25rem;
+}
+
+.item h3 {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.item p {
+  margin: 0.5rem 0 0;
+  line-height: 1.65;
+  color: var(--ink-quiet);
+}
+
+/* The hero sits on the field, so its own padding has to survive the canvas
+ * behind it — the component fills its box and puts the content above. */
+.field.hero {
+  padding: 0;
+}
+
+.field.hero .field__content {
+  padding: clamp(3rem, 8vw, 7rem) 1.25rem;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Atelier Nord — the variant.
+
+   Warm marble paper, one dark wall, copper. Fraunces for the headings, the
+   system sans for everything read at length. Every colour above is a token;
+   nothing below names one.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --shadow-1: 0 1px 2px color-mix(in srgb, var(--ink) 8%, transparent);
+  --shadow-2: 0 10px 30px color-mix(in srgb, var(--ink) 12%, transparent);
+  --shadow-3: 0 24px 60px color-mix(in srgb, var(--ink) 18%, transparent);
+  --measure: 36rem;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+
+h1,
+h2,
+h3,
+.wordmark {
+  font-family: var(--display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  font-variation-settings: 'opsz' 96;
+}
+h2 {
+  font-size: clamp(1.75rem, 1rem + 2.4vw, 3rem);
+  line-height: 1.08;
+  margin: 0;
+  text-wrap: balance;
+}
+h3 {
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+.eyebrow {
+  color: var(--accent-ink);
+  font-weight: 500;
+}
+.btn,
+.booking__next {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition:
+    transform var(--dur) var(--ease),
+    filter var(--dur) var(--ease);
+}
+.btn:hover,
+.booking__next:hover {
+  transform: translateY(-1px);
+}
+.btn--small {
+  padding: 0.55rem 1.1rem;
+  font-size: 0.9375rem;
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.btn--ghost:hover {
+  box-shadow: inset 0 0 0 1px var(--ink);
+  filter: none;
+}
+
+/* ── the header ────────────────────────────────────────────────────────── */
+.site-head {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--paper) 84%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+}
+.site-head__inner {
+  width: var(--shell);
+  max-width: 100%;
+  margin-inline: auto;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.wordmark {
+  font-size: 1.375rem;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+  font-variation-settings: 'opsz' 144;
+}
+.site-nav {
+  display: flex;
+  gap: 1.25rem;
+  margin-left: auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.site-nav::-webkit-scrollbar {
+  display: none;
+}
+.site-nav a {
+  color: var(--ink-quiet);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid transparent;
+  transition: color var(--dur) var(--ease);
+}
+.site-nav a:hover,
+.site-nav a[aria-current='page'] {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+@media (max-width: 48rem) {
+  .site-head__inner {
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+  }
+  .site-nav {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+  }
+  .site-head__book {
+    margin-left: auto;
+  }
+}
+
+/* ── the hero ──────────────────────────────────────────────────────────── */
+.hero {
+  color: var(--paper);
+  background: var(--ink);
+}
+.hero .eyebrow {
+  color: var(--fl-c2, var(--accent));
+}
+.hero .lead {
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
+}
+.hero__inner {
+  display: grid;
+  gap: 0 clamp(2rem, 5vw, 4rem);
+  align-content: center;
+  min-height: min(78vh, 46rem);
+}
+.hero__inner > * {
+  grid-column: 1;
+  margin: 0;
+}
+.hero__inner > .eyebrow {
+  margin-bottom: 1.25rem;
+}
+.hero__inner > .lead {
+  margin-top: 1.5rem;
+}
+.hero__inner > .actions {
+  margin-top: 2rem;
+}
+.hero__inner > .hero__shot {
+  margin-top: 2.5rem;
+}
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.6rem, 1.4rem + 5vw, 6rem);
+  font-weight: 300;
+  font-variation-settings: 'opsz' 144;
+}
+.hero__shot {
+  margin: 0;
+  border-radius: var(--r-4);
+  overflow: hidden;
+  box-shadow: var(--shadow-3);
+  transform: rotate(var(--hand, -2deg));
+}
+@media (min-width: 62rem) {
+  .hero__inner {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+  }
+  .hero__inner > .hero__shot {
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    justify-self: end;
+    align-self: center;
+    width: min(100%, 34rem);
+    margin-top: 0;
+  }
+}
+.hero .btn {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* ── bands and strips ──────────────────────────────────────────────────── */
+.band:nth-of-type(even) {
+  background: transparent;
+}
+.band.band--deep {
+  background: var(--paper-deep);
+}
+.band.band--dark {
+  background: var(--ink);
+  color: var(--paper);
+}
+.band--dark h2,
+.band--dark h3 {
+  color: var(--paper);
+}
+.band--dark .master__does {
+  color: color-mix(in srgb, var(--paper) 62%, transparent);
+}
+.band--dark .master__hours {
+  color: var(--fl-c2, var(--accent));
+}
+.band--dark .eyebrow {
+  color: var(--fl-c2, var(--accent));
+}
+.band--dark .lead,
+.band--dark .quiet {
+  color: color-mix(in srgb, var(--paper) 72%, transparent);
+}
+.band__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+.band__head .lead {
+  margin-top: 0.75rem;
+}
+.more {
+  color: var(--ink);
+  font-size: 0.9375rem;
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 0.1rem;
+  white-space: nowrap;
+}
+.band--dark .more {
+  color: var(--paper);
+}
+
+/* services, as a price list */
+.prices {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+  gap: 0 clamp(1.5rem, 4vw, 4rem);
+}
+.price {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.25rem 1rem;
+  align-items: baseline;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.price h3 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+.price__takes {
+  grid-column: 1;
+  margin: 0;
+  color: var(--ink-quiet);
+  font-size: 0.9375rem;
+}
+.price__costs {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  font-family: var(--display);
+  font-size: 1.375rem;
+  color: var(--accent-ink);
+  font-variation-settings: 'opsz' 48;
+}
+.band--dark .price {
+  border-bottom-color: color-mix(in srgb, var(--paper) 18%, transparent);
+}
+.band--dark .price__takes {
+  color: color-mix(in srgb, var(--paper) 60%, transparent);
+}
+.band--dark .price__costs {
+  color: var(--fl-c2, var(--accent));
+}
+
+/* the three promises */
+.pledges {
+  list-style: none;
+  margin: clamp(1.5rem, 3vw, 2.5rem) 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  counter-reset: pledge;
+}
+.pledge {
+  padding: 1.5rem 1.5rem 1.6rem;
+  background: var(--panel);
+  border-radius: var(--r-3);
+  box-shadow: var(--shadow-1);
+}
+.pledge::before {
+  counter-increment: pledge;
+  content: counter(pledge, decimal-leading-zero);
+  display: block;
+  font-family: var(--display);
+  font-size: 0.9375rem;
+  color: var(--accent-ink);
+  margin-bottom: 0.75rem;
+}
+.pledge h3 {
+  margin: 0;
+}
+.pledge p {
+  margin: 0.5rem 0 0;
+  color: var(--ink-quiet);
+  line-height: 1.6;
+}
+
+/* the story: words beside pictures */
+.story {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: center;
+}
+@media (min-width: 56rem) {
+  .story {
+    grid-template-columns: 1fr 1fr;
+  }
+  .story--flip > :first-child {
+    order: 2;
+  }
+}
+.story .prose {
+  margin-top: 1.25rem;
+}
+.story__shot {
+  margin: 0;
+  border-radius: var(--r-4);
+  overflow: hidden;
+  box-shadow: var(--shadow-2);
+}
+.work {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  padding-bottom: 1.5rem;
+}
+.work__slot {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--r-3);
+  overflow: hidden;
+  box-shadow: var(--shadow-2);
+}
+.work__slot:nth-child(2) {
+  transform: translateY(1.5rem);
+}
+.work__shot {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  transform: scale(1.04);
+  transition:
+    opacity 0.9s var(--ease),
+    transform 1.6s var(--ease);
+}
+.work__shot.is-on {
+  opacity: 1;
+  transform: none;
+}
+.work__shot .shot__frame,
+.work__shot img {
+  height: 100%;
+}
+@media (max-width: 40rem) {
+  .work {
+    grid-template-columns: 1fr 1fr;
+  }
+  .work__slot:nth-child(3) {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .work__shot {
+    transition: none;
+  }
+}
+
+/* the team */
+.masters {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+}
+.master {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.master figure {
+  margin: 0 0 1rem;
+  border-radius: var(--r-3);
+  overflow: hidden;
+  box-shadow: var(--shadow-1);
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.master:hover figure {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-2);
+}
+.master h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+.master__does {
+  margin: 0.35rem 0 0;
+  color: var(--ink-quiet);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.master__hours {
+  margin: 0.35rem 0 0;
+  font-size: 0.875rem;
+  color: var(--accent-ink);
+}
+
+/* questions, as a list that opens */
+.faq {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  max-width: 46rem;
+}
+.faq details {
+  border-top: 1px solid var(--line);
+}
+.faq details:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.faq summary {
+  cursor: pointer;
+  padding: 1.1rem 0;
+  font-family: var(--display);
+  font-size: 1.25rem;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+.faq summary::after {
+  content: '+';
+  color: var(--accent-ink);
+  font-family: system-ui, sans-serif;
+  transition: transform var(--dur) var(--ease);
+}
+.faq details[open] summary::after {
+  transform: rotate(45deg);
+}
+.faq p {
+  margin: 0 0 1.25rem;
+  color: var(--ink-quiet);
+  line-height: 1.65;
+  max-width: var(--measure);
+}
+
+/* the form bands: the form carries its own heading and lead */
+.band__inner--form {
+  max-width: none;
+}
+.band--cta_banner,
+.band--ask {
+  padding-block: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+/* ── the enquiry form the kit draws ────────────────────────────────────── */
+form.lead {
+  display: grid;
+  /* the paragraph rule `.lead` caps the measure; the form is not a paragraph */
+  max-width: none;
+  gap: 1rem 1.25rem;
+  grid-template-columns: 1fr 1fr;
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
+  background: var(--panel);
+  border-radius: var(--r-4);
+  box-shadow: var(--shadow-2);
+}
+form.lead > * {
+  grid-column: 1 / -1;
+}
+.lead__head {
+  margin-bottom: 0.5rem;
+}
+.lead__title {
+  margin: 0;
+  font-size: clamp(2rem, 1rem + 3vw, 3.25rem);
+}
+.lead__lead {
+  max-width: var(--measure);
+  margin: 0.75rem 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink-quiet);
+}
+@media (min-width: 40rem) {
+  /* the name and the contact side by side: the head is the first child */
+  form.lead > .field:nth-child(2),
+  form.lead > .field:nth-child(3) {
+    grid-column: span 1;
+  }
+}
+/* Wide: the words on the left, the fields on the right, so the whole form
+   sits in one screen between the header and the fold. The children are the
+   head, four fields, the trap, the note and the foot, in that order. */
+@media (min-width: 60rem) {
+  form.lead {
+    grid-template-columns: 0.85fr 1fr 1fr;
+    gap: 1rem 1.75rem;
+    align-items: start;
+    padding: clamp(2rem, 3.5vw, 3rem);
+  }
+  form.lead > .lead__head {
+    grid-column: 1;
+    grid-row: 1 / span 6;
+    padding-right: clamp(0.5rem, 3vw, 2.5rem);
+    margin: 0;
+  }
+  form.lead > .field:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  form.lead > .field:nth-child(3) {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  form.lead > .field:nth-child(4) {
+    grid-column: 2 / 4;
+    grid-row: 2;
+  }
+  form.lead > .field:nth-child(5) {
+    grid-column: 2 / 4;
+    grid-row: 3;
+  }
+  form.lead > .lead__legal {
+    grid-column: 2 / 4;
+    grid-row: 4;
+  }
+  form.lead > .lead__foot {
+    grid-column: 2 / 4;
+    grid-row: 5;
+  }
+  form.lead .field__input--area {
+    min-height: 6rem;
+  }
+}
+form.lead .field {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+}
+form.lead .field__label {
+  font-size: 0.875rem;
+  color: var(--ink-quiet);
+}
+form.lead .field__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  background: var(--paper);
+  font: inherit;
+  color: var(--ink);
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+form.lead .field__input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+form.lead .field__input--area {
+  min-height: 7.5rem;
+  resize: vertical;
+}
+form.lead .field__error {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--danger);
+}
+form.lead .trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.lead__legal {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--ink-quiet);
+}
+.lead__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.25rem;
+}
+.lead__status {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--ink-quiet);
+}
+.lead__status:empty {
+  display: none;
+}
+form.lead[data-state='sent'] .field,
+form.lead[data-state='sent'] .lead__foot .btn {
+  display: none;
+}
+
+/* the listings the kit draws */
+.listing {
+  padding: clamp(3rem, 8vw, 7rem) 1.25rem;
+  width: var(--shell);
+  max-width: 100%;
+  margin-inline: auto;
+}
+.listing h1 {
+  margin: 0 0 1.5rem;
+}
+.listing-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+  gap: 0 clamp(1.5rem, 4vw, 4rem);
+}
+.listing-row {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+}
+.listing-row > :first-child {
+  flex: 1 1 12rem;
+  font-weight: 500;
+}
+.listing-row h2 {
+  margin: 0;
+  font-size: 1.375rem;
+}
+
+/* the booking form the kit draws — a section of its own under the list,
+   so it is brought into the shell here */
+.listing-book {
+  width: var(--shell);
+  max-width: 100%;
+  margin: 0 auto clamp(3rem, 8vw, 7rem);
+  padding: 0 1.25rem;
+  scroll-margin-top: 5.5rem;
+}
+.listing-book .booking {
+  scroll-margin-top: 5.5rem;
+}
+.listing-book .booking {
+  /* the kit caps the form at a column's width; here it is the whole card */
+  max-width: none;
+  width: 100%;
+  box-sizing: border-box;
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  background: var(--panel);
+  border-radius: var(--r-4);
+  box-shadow: var(--shadow-2);
+  display: grid;
+  gap: 0.85rem 1.5rem;
+}
+.listing-book .booking textarea {
+  min-height: 4.5rem;
+}
+.listing-book .booking .field__input,
+.listing-book .booking .booking__dd-trigger {
+  padding: 0.65rem 0.9rem;
+}
+.booking__service {
+  padding: 0.5rem 0;
+}
+.booking__times .booking__slots,
+.booking__slots {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+}
+.booking__slot {
+  padding: 0.55rem 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  background: transparent;
+  color: var(--ink-2, var(--ink));
+  font: inherit;
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.booking__slot:hover {
+  border-color: var(--ink);
+  background: var(--paper);
+}
+.booking__slot.is-chosen,
+.booking__slot[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.booking__slot[hidden] {
+  display: none;
+}
+.booking__times .booking__hint {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border: 1px dashed var(--line);
+  border-radius: var(--r-2);
+  color: var(--ink-quiet);
+  font-size: 0.9375rem;
+}
+.booking__times .booking__hint:empty {
+  display: none;
+}
+.booking__parts {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0 0 0.6rem;
+  padding: 0.2rem;
+  background: var(--paper-deep);
+  border-radius: 999px;
+  width: max-content;
+  max-width: 100%;
+}
+.booking__parts[hidden] {
+  display: none;
+}
+.booking__part {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.8rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-quiet);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.booking__part.is-current {
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: var(--shadow-1);
+}
+.booking__part-n {
+  font-size: 0.75rem;
+  color: var(--ink-quiet);
+}
+.booking__total {
+  margin: 0.9rem 0 0;
+  font-family: var(--display);
+  font-size: 1.125rem;
+}
+
+/* the steps, named */
+.booking__stepper {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0 0 0.25rem;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+  color: var(--ink-quiet);
+}
+.booking__step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.booking__step-n {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-2, #c9c0b2);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+.booking__step.is-current {
+  color: var(--ink);
+  font-weight: 500;
+}
+.booking__step.is-current .booking__step-n {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.booking__step.is-done .booking__step-n {
+  background: var(--ok, #2f7d5a);
+  color: var(--paper);
+  border-color: transparent;
+}
+
+/* the week of days */
+.booking__days-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.45rem;
+}
+.booking__days-month {
+  font-family: var(--display);
+  font-size: 1.0625rem;
+}
+.booking__days-nav {
+  display: flex;
+  gap: 0.15rem;
+}
+.booking__days-arrow {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.booking__days-arrow:hover:not(:disabled) {
+  background: var(--paper-deep);
+}
+.booking__days-arrow:disabled {
+  color: var(--line);
+  cursor: default;
+}
+.booking__days-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.35rem;
+}
+.booking__day {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.45rem 0.2rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.booking__day-wd {
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-quiet);
+}
+.booking__day-n {
+  font-family: var(--display);
+  font-size: 1.125rem;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.booking__day:hover:not(:disabled) {
+  border-color: var(--ink);
+  background: var(--paper);
+}
+.booking__day:disabled {
+  color: var(--line-2, #c9c0b2);
+  cursor: default;
+}
+.booking__day:disabled .booking__day-wd {
+  color: var(--line-2, #c9c0b2);
+}
+.booking__day.is-chosen,
+.booking__day.is-chosen:hover:not(:disabled) {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.booking__day.is-chosen .booking__day-wd {
+  color: var(--fl-c2, var(--accent));
+}
+.booking > .field {
+  margin: 0;
+}
+/* Wide: the services on the left, the rest on the right, the name and the
+   phone side by side — and the whole of it in one screen. */
+@media (min-width: 60rem) {
+  .listing-book .booking {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.85rem 2rem;
+    align-items: start;
+  }
+  .booking > * {
+    grid-column: 2 / 4;
+  }
+  .booking > .field:has([name='service']) {
+    grid-column: 1;
+    grid-row: 1 / span 9;
+    padding-right: clamp(0.5rem, 2vw, 2rem);
+    border-right: 1px solid var(--line);
+  }
+  .booking > .field:has([name='name']) {
+    grid-column: 2;
+  }
+  .booking > .field:has([name='phone']) {
+    grid-column: 3;
+  }
+  .booking > noscript,
+  .booking > .booking__done {
+    grid-column: 1 / 4;
+  }
+  .booking > .booking__submit {
+    justify-self: start;
+  }
+}
+
+/* the services as a list with their own boxes */
+.booking__service {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+}
+.booking__service:hover .booking__service-name {
+  color: var(--accent-ink);
+}
+.booking__service input[type='checkbox'],
+.booking input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 1.3rem;
+  height: 1.3rem;
+  margin: 0;
+  border: 1.5px solid var(--line-2, #c9c0b2);
+  border-radius: 7px;
+  background: var(--paper);
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+.booking input[type='checkbox']::before {
+  content: '';
+  width: 0.7rem;
+  height: 0.7rem;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  background: var(--paper);
+  transform: scale(0);
+  transition: transform var(--dur) var(--ease);
+}
+.booking input[type='checkbox']:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.booking input[type='checkbox']:checked::before {
+  transform: scale(1);
+}
+.booking input[type='checkbox']:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 2px;
+}
+.booking__service-name {
+  flex: 1;
+}
+
+/* the month on the page */
+.field__input.is-replaced {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.cal-field {
+  position: relative;
+}
+.cal-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.cal-trigger__text.is-empty {
+  color: var(--ink-quiet);
+}
+.cal-trigger__mark {
+  color: var(--ink-quiet);
+  font-size: 0.8rem;
+}
+.cal {
+  padding: 0.9rem 1rem 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r-3);
+  width: min(21rem, 100%);
+}
+.cal--pop {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  z-index: 30;
+  box-shadow: var(--shadow-3);
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+  pointer-events: none;
+  transition:
+    opacity var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.cal--pop.is-open {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.cal__month {
+  font-family: var(--display);
+  font-size: 1.125rem;
+}
+.cal__nav {
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--ink);
+}
+.cal__nav:hover:not(:disabled) {
+  background: var(--paper-deep);
+}
+.cal__nav:disabled {
+  color: var(--line);
+  cursor: default;
+}
+.cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.2rem;
+  text-align: center;
+}
+.cal__wd {
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-quiet);
+  padding: 0.25rem 0 0.4rem;
+}
+.cal__day {
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.cal__day:hover:not(:disabled) {
+  background: var(--paper-deep);
+}
+.cal__day:disabled {
+  color: var(--line);
+  cursor: default;
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--ink) 20%, transparent);
+}
+.cal__day.is-chosen {
+  background: var(--ink);
+  color: var(--paper);
+}
+.booking__times .booking__slots {
+  margin-top: 0.5rem;
+}
+.booking .field,
+.listing-book .field {
+  display: grid;
+  gap: 0.35rem;
+  margin: 1rem 0;
+}
+.field__label {
+  font-size: 0.875rem;
+  color: var(--ink-quiet);
+}
+.field__input,
+.booking__dd-trigger,
+.booking select,
+.booking input:not([type='checkbox']):not([type='radio']),
+.booking textarea {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  background: var(--paper);
+  font: inherit;
+  max-width: 100%;
+}
+.booking__services {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+.booking__service {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.booking__service-meta {
+  margin-left: auto;
+  color: var(--ink-quiet);
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+.booking__slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.booking__slot {
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  cursor: pointer;
+}
+.booking__slot:hover,
+.booking__slot[aria-pressed='true'] {
+  border-color: var(--ink);
+}
+.booking button[type='submit'] {
+  padding: 0.85rem 1.6rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+}
+.booking__total {
+  font-family: var(--display);
+  font-size: 1.25rem;
+}
+.booking__hint,
+.booking__note {
+  color: var(--ink-quiet);
+  font-size: 0.9375rem;
+}
+
+/* the contact page */
+.visit {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 4rem);
+}
+@media (min-width: 56rem) {
+  .visit {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+}
+.facts {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--r-4);
+  box-shadow: var(--shadow-3);
+  align-self: start;
+}
+.facts h2 {
+  font-size: 0.75rem;
+  font-family: system-ui, sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fl-c2, var(--accent));
+  margin: 0 0 0.6rem;
+}
+.facts p {
+  margin: 0;
+  line-height: 1.6;
+}
+.facts a {
+  color: var(--paper);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--paper) 30%, transparent);
+}
+.facts .hours {
+  grid-column: 1 / -1;
+}
+
+/* ── the footer ────────────────────────────────────────────────────────── */
+.site-foot {
+  background: var(--ink);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
+  padding: clamp(3rem, 6vw, 5rem) 1.25rem 2rem;
+  font-size: 0.9375rem;
+}
+.site-foot a {
+  color: var(--paper);
+  text-decoration: none;
+}
+.site-foot a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.site-foot__inner {
+  width: var(--shell);
+  max-width: 100%;
+  margin-inline: auto;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+}
+.site-foot__col--wide {
+  grid-column: span 1;
+}
+.site-foot .wordmark {
+  color: var(--paper);
+}
+.site-foot__desc {
+  margin: 0.75rem 0 0;
+  max-width: 22rem;
+  line-height: 1.6;
+}
+.site-foot__h {
+  margin: 0 0 0.5rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--paper) 50%, transparent);
+}
+.site-foot p {
+  margin: 0;
+  line-height: 1.6;
+}
+.site-foot__col {
+  padding-bottom: 0.5rem;
+}
+.site-foot__small {
+  width: var(--shell);
+  max-width: 100%;
+  margin: 3rem auto 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid color-mix(in srgb, var(--paper) 14%, transparent);
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--paper) 50%, transparent);
+}
+.hours {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.2rem 1rem;
+}
+.hours dt,
+.hours dd {
+  margin: 0;
+}
+
+/* ── an entry's own page (a master) ────────────────────────────────────── */
+.entry {
+  width: var(--shell);
+  max-width: 100%;
+  margin-inline: auto;
+  padding: clamp(3rem, 8vw, 7rem) 1.25rem;
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: start;
+}
+@media (min-width: 56rem) {
+  .entry {
+    grid-template-columns: minmax(0, 28rem) 1fr;
+  }
+  .entry > h1 {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .entry > img,
+  .entry > picture,
+  .entry > figure {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+  }
+}
+.entry > h1 {
+  margin: 0;
+}
+.entry > img,
+.entry > picture img,
+.entry > figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 50% 30%;
+  border-radius: var(--r-4);
+  box-shadow: var(--shadow-2);
+}
+.entry-facts {
+  margin: 0;
+  display: grid;
+  gap: 1.25rem;
+}
+.entry-facts dt {
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-quiet);
+  margin-bottom: 0.4rem;
+}
+.entry-facts dd {
+  margin: 0;
+}
+.entry-facts ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.entry-facts li {
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  background: var(--panel);
+}
+
+/* ── questions that open and close with a little breath ────────────────── */
+:root {
+  interpolate-size: allow-keywords;
+}
+.faq details::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition:
+    block-size 0.32s var(--ease),
+    content-visibility 0.32s allow-discrete;
+}
+.faq details[open]::details-content {
+  block-size: auto;
+}
+.faq details p {
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.3s var(--ease) 0.08s,
+    transform 0.3s var(--ease) 0.08s;
+}
+.faq details[open] p {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── the master's own page: the name, the words, the facts, the way to book ── */
+.entry {
+  gap: 1.5rem clamp(1.5rem, 4vw, 4rem);
+}
+.entry > h1 {
+  order: 1;
+}
+.entry > .entry-body {
+  order: 2;
+}
+.entry > .entry-facts {
+  order: 3;
+}
+.entry > .entry__book {
+  order: 4;
+  margin: 0.5rem 0 0;
+}
+@media (min-width: 56rem) {
+  .entry > h1 {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .entry > .entry-body {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .entry > .entry-facts {
+    grid-column: 2;
+    grid-row: 3;
+  }
+  .entry > .entry__book {
+    grid-column: 2;
+    grid-row: 4;
+  }
+  .entry > img,
+  .entry > picture,
+  .entry > figure {
+    grid-row: 1 / span 4;
+  }
+}
+.entry-body {
+  max-width: var(--measure);
+  line-height: 1.7;
+}
+.entry-body > * + * {
+  margin-top: 0.85em;
+}
+
+/* ── the privacy page: one column of prose inside the shell ─────────────── */
+main.prose {
+  width: var(--shell);
+  max-width: 100%;
+  margin: 0 auto;
+  padding: clamp(3rem, 8vw, 7rem) 1.25rem;
+  line-height: 1.7;
+}
+main.prose > * {
+  max-width: var(--measure);
+}
+main.prose h1 {
+  margin: 0 0 1rem;
+}
+main.prose h2 {
+  margin: 2.5rem 0 0.5rem;
+  font-size: 1.5rem;
+}
+main.prose .lead {
+  margin-top: 0;
+}
+
+/* ── the drawn select ───────────────────────────────────────────────────── */
+.booking__dd {
+  position: relative;
+}
+.booking__dd-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.booking__dd-mark,
+.cal-trigger__mark {
+  color: var(--ink-quiet);
+  font-size: 0.8rem;
+  line-height: 1;
+}
+.booking__dd-list {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  margin: 0;
+  padding: 0.4rem;
+  list-style: none;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r-3);
+  box-shadow: var(--shadow-3);
+  opacity: 0;
+  transform: translateY(-4px) scale(0.99);
+  pointer-events: none;
+  transition:
+    opacity var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+.booking__dd-list:not([hidden]) {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.booking__dd-option {
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--r-2);
+  cursor: pointer;
+}
+.booking__dd-option:hover {
+  background: var(--paper-deep);
+}
+.booking__dd-option.is-chosen {
+  background: var(--ink);
+  color: var(--paper);
+}
+.booking__dd-option:disabled,
+.booking__dd-option[aria-disabled='true'] {
+  color: var(--ink-quiet);
+  cursor: default;
+}
+
+/* ── the booking in two steps ───────────────────────────────────────────── */
+.booking[data-stage='1'] > [data-step='2'],
+.booking[data-stage='2'] > [data-step='1'] {
+  display: none;
+}
+.booking__need {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.9375rem;
+}
+.booking__next {
+  justify-self: start;
+}
+.booking__summary {
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-3);
+  background: var(--paper);
+}
+.booking__summary-label {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-quiet);
+}
+.booking__summary-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+}
+.booking__summary-row {
+  display: grid;
+  gap: 0.1rem;
+}
+.booking__summary-row dt {
+  font-size: 0.8125rem;
+  color: var(--ink-quiet);
+}
+.booking__summary-row dd {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.125rem;
+  line-height: 1.35;
+}
+.booking__back {
+  justify-self: start;
+  padding: 0.4rem 0.95rem;
+  border: 1px solid var(--line-2, #c9c0b2);
+  border-radius: 999px;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease);
+}
+.booking__back:hover {
+  border-color: var(--ink);
+}
+.booking__ends {
+  margin: 0.75rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--ink-2, var(--ink));
+}
+.booking__retime {
+  margin: 0.75rem 0 0;
+  padding: 0.6rem 0.9rem;
+  border-radius: var(--r-2);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  font-size: 0.9375rem;
+  color: var(--ink);
+}
+.booking__retime[hidden],
+.booking__ends[hidden] {
+  display: none;
+}
+.booking__service.is-off {
+  opacity: 0.45;
+  cursor: default;
+}
+.booking__service.is-off input[type='checkbox'] {
+  cursor: default;
+}
+.booking__service-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.booking__service-text .booking__service-name {
+  flex: none;
+}
+.booking__service-off {
+  font-size: 0.75rem;
+  color: var(--ink-quiet);
+}
+
+/* the success, as a screen of its own */
+.booking[data-stage='done'] > .booking__stepper,
+.booking[data-stage='done'] > .booking__summary,
+.booking[data-stage='done'] > .booking__need,
+.booking[data-stage='done'] > .booking__next,
+.booking[data-stage='done'] > noscript {
+  display: none;
+}
+.booking[data-stage='done'] > .booking__done {
+  grid-column: 1 / -1;
+  justify-self: center;
+  max-width: 34rem;
+  padding: clamp(1.5rem, 4vw, 3rem) 1rem;
+  text-align: center;
+}
+.booking__done:focus {
+  outline: none;
+}
+.booking__done-line {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(2rem, 1rem + 3vw, 3rem);
+  line-height: 1.1;
+}
+.booking__done-line::before {
+  content: '✓';
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 1rem;
+  border-radius: 999px;
+  background: var(--ok, #2f7d5a);
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-size: 1.5rem;
+}
+.booking__done-when {
+  margin: 0.75rem 0 0;
+  font-size: 1.0625rem;
+  color: var(--ink-2, var(--ink));
+}
+.booking__done .booking__note {
+  margin-top: 0.75rem;
+}
+.booking__keep {
+  margin: 1.5rem auto 0;
+  max-width: 30rem;
+  text-align: left;
+}
+.booking__keep-note {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+  color: var(--ink-2, var(--ink));
+}
+.booking__keep-row {
+  display: flex;
+  gap: 0.4rem;
+}
+.booking__keep-link {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  background: var(--paper);
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--ink-2, var(--ink));
+}
+.booking__keep-copy,
+.booking__keep-open {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.875rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+.booking__keep-copy {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.booking__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 1.5rem 0 0;
+}
+.booking__links a {
+  display: inline-flex;
+  padding: 0.65rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.9375rem;
+}
+.booking__links a[hidden] {
+  display: none;
+}
+.booking__links a:hover {
+  border-color: var(--ink);
+}
+.booking__again {
+  margin-top: 1.25rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-quiet);
+  font: inherit;
+  font-size: 0.9375rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+@media (min-width: 60rem) {
+  .booking > .field:has([name='day']) {
+    grid-column: 2 / 4;
+  }
+  .booking > .booking__times {
+    grid-column: 2 / 4;
+  }
+  .booking > .booking__need,
+  .booking > .booking__next {
+    grid-column: 2 / 4;
+  }
+  .booking[data-stage='2'] > .booking__summary {
+    grid-column: 1;
+    grid-row: 1 / span 9;
+    align-self: start;
+  }
+  .booking[data-stage='2'] > .field:has([name='name']) {
+    grid-column: 2;
+  }
+  .booking[data-stage='2'] > .field:has([name='phone']) {
+    grid-column: 3;
+  }
+  .booking[data-stage='2'] > .field:has([name='email']),
+  .booking[data-stage='2'] > .field:has([name='note']),
+  .booking[data-stage='2'] > .field__error,
+  .booking[data-stage='2'] > .booking__challenge,
+  .booking[data-stage='2'] > .booking__submit {
+    grid-column: 2 / 4;
+  }
+}
+
+/* on a phone: one column, nothing wider than the screen */
+.listing-book .booking > * {
+  min-width: 0;
+}
+.booking__days-row {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+@media (max-width: 40rem) {
+  .listing-book {
+    padding: 0 0.75rem;
+  }
+  .listing-book .booking {
+    padding: 1.1rem 1rem 1.25rem;
+    gap: 0.6rem 1rem;
+  }
+  .booking__stepper {
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    font-size: 0.875rem;
+  }
+  .booking__service {
+    gap: 0.65rem;
+  }
+  .booking__service-meta {
+    font-size: 0.8125rem;
+  }
+  .booking__days-row {
+    gap: 0.25rem;
+  }
+  .booking__day {
+    padding: 0.35rem 0.1rem 0.4rem;
+  }
+  .booking__day-wd {
+    font-size: 0.625rem;
+  }
+  .booking__day-n {
+    font-size: 1.05rem;
+  }
+  .booking__parts {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .booking__part {
+    padding: 0.35rem 0.65rem;
+    white-space: nowrap;
+  }
+  .booking__part-n {
+    display: none;
+  }
+  .booking__part.is-current .booking__part-n {
+    display: inline;
+  }
+  .booking__times .booking__slots,
+  .booking__slots {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+  }
+  .booking__slot {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.9375rem;
+  }
+  .booking__summary {
+    padding: 1rem 1.1rem;
+  }
+  .booking__summary-list {
+    gap: 0.45rem;
+  }
+  .booking[data-stage='done'] > .booking__done {
+    padding: 1rem 0;
+  }
+  .booking__keep-row {
+    flex-wrap: wrap;
+  }
+  .booking__keep-link {
+    flex-basis: 100%;
+  }
+}
+
+/* ── the language switcher ───────────────────────────────────────────────── */
+.site-lang {
+  display: flex;
+  gap: 0.1rem;
+  margin-left: 0.75rem;
+  padding: 0.15rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+.site-lang a {
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  color: var(--ink-quiet);
+  text-decoration: none;
+}
+.site-lang a[aria-current] {
+  background: var(--ink);
+  color: var(--paper);
+}
+@media (max-width: 48rem) {
+  .site-lang {
+    margin-left: auto;
+  }
+}
+
+/* ── the journal ─────────────────────────────────────────────────────────── */
+.band--journal h1 {
+  margin: 0.25rem 0 0;
+}
+.journal__empty {
+  margin-top: 2rem;
+  color: var(--ink-quiet);
+}
+.posts {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+  margin: clamp(2rem, 4vw, 3.5rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.post-card--first {
+  grid-column: 1 / -1;
+}
+.post-card__link {
+  display: grid;
+  gap: 1rem;
+  color: inherit;
+  text-decoration: none;
+}
+.post-card--first .post-card__link {
+  grid-template-columns: 1.4fr 1fr;
+  align-items: end;
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+@media (max-width: 48rem) {
+  .post-card--first .post-card__link {
+    grid-template-columns: 1fr;
+  }
+}
+.post-card__link .shot {
+  border-radius: var(--r-3);
+  overflow: hidden;
+}
+.post-card__text {
+  display: grid;
+  gap: 0.5rem;
+}
+.post-card__date {
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-quiet);
+}
+.post-card h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 1rem + 1.2vw, 2rem);
+  line-height: 1.15;
+  transition: color var(--dur) var(--ease);
+}
+.post-card--first h2 {
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 3rem);
+}
+.post-card__link:hover h2 {
+  color: var(--accent-ink);
+}
+.post-card p {
+  margin: 0;
+  color: var(--ink-quiet);
+  line-height: 1.6;
+}
+.post-card__read {
+  font-size: 0.9375rem;
+  color: var(--accent-ink);
+}
+
+/* a post, read */
+.entry--post {
+  max-width: 42rem;
+  margin-inline: auto;
+}
+.entry__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-quiet);
+}
+.entry__meta a {
+  color: var(--accent-ink);
+  text-decoration: none;
+}
+.entry__lead {
+  margin: 0.75rem 0 1.5rem;
+}
+.entry--post img {
+  border-radius: var(--r-3);
+}
+.entry--post .entry-body {
+  margin-top: 1.5rem;
+}
+
+/* a post reads in one column: the meta, the heading, the lead, the picture,
+   the text. The rules above place a master's page in two columns by
+   element (`.entry > h1`, `.entry > img` …) and fix their rows; a post names
+   the same elements with the same weight, later, and puts every one in the
+   one column with no row of its own. */
+.entry.entry--post {
+  display: grid;
+  gap: 1rem;
+  width: min(var(--shell), 100%);
+  max-width: 46rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+.entry--post > .entry__meta,
+.entry--post > h1,
+.entry--post > .entry__lead,
+.entry--post > img,
+.entry--post > picture,
+.entry--post > figure,
+.entry--post > .entry-body,
+.entry--post > .entry-facts,
+.entry--post > .entry-wall,
+.entry--post > .entry__book {
+  grid-column: 1;
+  grid-row: auto;
+}
+.entry--post > .entry__meta { order: 0; margin: 0; }
+.entry--post > h1 { order: 1; margin: 0; }
+.entry--post > .entry__lead { order: 2; margin: 0; font-size: 1.25rem; }
+.entry--post > img,
+.entry--post > picture,
+.entry--post > figure { order: 3; margin-top: 1rem; }
+.entry--post > img,
+.entry--post > picture img {
+  aspect-ratio: 16 / 9;
+  object-position: 50% 40%;
+  box-shadow: none;
+}
+.entry--post > .entry-body { order: 4; margin-top: 1rem; }
+.entry--post > .entry-wall { order: 5; }
+.entry--post > .entry__book { order: 6; }
+
+/* The kit's booking UI (@jtakeit/kit 0.5): its «Continue» is the site's
+   button, and a chosen service reads in the accent, as the form did when it
+   was the site's own (11 October 2026). */
+.booking__service:has(input[type='checkbox']:checked) .booking__service-name {
+  color: var(--accent-ink);
+}

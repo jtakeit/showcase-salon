@@ -1,0 +1,23 @@
+{
+  "blocks": [
+    {
+      "_key": "pwinter",
+      "body": "Sommerfarbe ist für die Sonne gemacht. Dieselben Strähnen unter einem Novemberhimmel in Zürich wirken grau, und der Ansatz, der im August charmant war, ist zwei Monate länger.\n\nIm Oktober nehmen wir die Farbe einen halben Ton zurück und näher an den Ansatz — wärmer, weniger Kontrast, damit sie durch die dunklen Monate leise herauswächst, statt alle fünf Wochen einen Besuch zu brauchen.\n\n## Wenn Sie Strähnen haben\n\nEin Gloss darüber, keine neue Aufhellung. Dauert vierzig Minuten, kostet einen Bruchteil einer Komplettfärbung und hält, bis das Licht im März zurückkommt.\n\n## Wenn Sie eine Komplettfärbung haben\n\nDerselbe Ton, eine Stufe wärmer. Auf der Farbkarte ist der Unterschied unsichtbar, in einem Caféfenster auf Ihrem Gesicht ist er deutlich.\n\nBuchen Sie eine Komplettfärbung oder Strähnen und schreiben Sie «Winter» in die Notiz; wir wissen, was gemeint ist.",
+      "cover": "colour",
+      "date": "2026-10-01",
+      "excerpt": "Ab November wird das Licht flach; eine Farbe, die im Juli stimmte, wirkt dann müde. Was Noa dagegen tut.",
+      "title": "Farbe vor dem Winter: was wir im Oktober empfehlen",
+      "type": "post",
+      "v": 1
+    }
+  ],
+  "collection": "blog",
+  "locale": "de",
+  "path": "/de/blog/winter-colour",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

@@ -1,0 +1,32 @@
+{
+  "blocks": [
+    {
+      "_key": "ejonas",
+      "body": "Scissors over comb, a clean fade, a beard that follows the jaw instead of fighting it. I learned in a barbershop in Basel and kept the habits: hot towel, straight lines, no small talk unless you want it.\n\nI cut children too — the ones who sit still and the ones who do not. Come in on a weekday morning if you can; Saturdays are the busiest chair in the room.",
+      "cover": "jonas",
+      "does": [
+        {
+          "service": "mens-cut"
+        },
+        {
+          "service": "beard"
+        },
+        {
+          "service": "childrens-cut"
+        }
+      ],
+      "hours": [],
+      "title": "Jonas Brunner",
+      "type": "master",
+      "v": 1
+    }
+  ],
+  "collection": "masters",
+  "path": "/masters/jonas",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

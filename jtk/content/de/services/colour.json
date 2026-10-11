@@ -1,0 +1,21 @@
+{
+  "blocks": [
+    {
+      "_key": "ecolour",
+      "costs": 18000,
+      "takes": 120,
+      "title": "Komplettfärbung",
+      "type": "service",
+      "v": 1
+    }
+  ],
+  "collection": "services",
+  "locale": "de",
+  "path": "/de/services/colour",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

@@ -1,0 +1,22 @@
+{
+  "blocks": [
+    {
+      "_key": "pchildr",
+      "body": "The first haircut is not about the hair. It is about a small person sitting still in a strange room while a stranger holds something sharp near their ears.\n\nSo we book it for twice the time, and we use half of it. Elif starts with the mirror — there is one at child height — and with the cape, which is a game before it is a cape. The scissors come out only after the child has held them, closed, and put them down.\n\n## Three things that help\n\n- Come after a nap and after food. Nothing good happens at half past four.\n- Bring the thing they hold. A toy, a book, the other parent.\n- Say what is going to happen in the car, not at the door.\n\nAnd if it stops halfway, it stops halfway. A child who leaves with one side done and no tears comes back the next week for the other side and remembers the place fondly. One who was held down does not.",
+      "cover": "wash",
+      "date": "2026-09-22",
+      "excerpt": "Twice the time, a mirror at their height, and permission to stop. Elif on how the first cut goes.",
+      "title": "A child's first haircut, without tears",
+      "type": "post",
+      "v": 1
+    }
+  ],
+  "collection": "blog",
+  "path": "/blog/childrens-first-cut",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

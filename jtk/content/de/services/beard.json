@@ -1,0 +1,21 @@
+{
+  "blocks": [
+    {
+      "_key": "ebeard",
+      "costs": 3000,
+      "takes": 20,
+      "title": "Bartschnitt",
+      "type": "service",
+      "v": 1
+    }
+  ],
+  "collection": "services",
+  "locale": "de",
+  "path": "/de/services/beard",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

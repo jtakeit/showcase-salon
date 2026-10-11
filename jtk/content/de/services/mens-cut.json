@@ -1,0 +1,21 @@
+{
+  "blocks": [
+    {
+      "_key": "emens-cu",
+      "costs": 6500,
+      "takes": 45,
+      "title": "Herrenhaarschnitt",
+      "type": "service",
+      "v": 1
+    }
+  ],
+  "collection": "services",
+  "locale": "de",
+  "path": "/de/services/mens-cut",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

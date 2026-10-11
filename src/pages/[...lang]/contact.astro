@@ -1,0 +1,86 @@
+---
+/**
+ * Contact: the way there, the facts beside the hours, the form, and what to
+ * know before coming. The facts are `src/data/site.ts`'s and the hours are
+ * `jtk/bookings.json`'s — rendered from where they live, never typed again.
+ */
+import Layout from '../../layouts/Layout.astro';
+import OpeningHours from '../../components/OpeningHours.astro';
+import LeadFormFor from '../../components/LeadFormFor.astro';
+import { readPage } from '../../lib/page';
+import { md } from '../../lib/md';
+import { BUSINESS } from '../../data/site';
+import { copyFor } from '../../copy';
+import { localeParams, withLocale } from '../../lib/locale';
+
+export const getStaticPaths = localeParams;
+
+const locale = Astro.params.lang ?? '';
+const { FOOTER, META } = copyFor(locale);
+
+const page = readPage(withLocale(locale, '/contact'));
+const visit = page.block('visit');
+const cta = page.block('cta_banner');
+const faq = page.block('questions');
+const text = (o: Record<string, unknown>, k: string): string => String(o[k] ?? '');
+---
+
+<Layout title={page.seo.title} description={page.seo.description} alternates={page.alternates}>
+  <main id="content">
+    <section class="band" data-reveal="settle">
+      <div class="band__inner visit">
+        <div>
+          <h1 data-jtk-path={page.pathAt(visit.at, 'title')}>{page.str(visit.of, 'title')}</h1>
+          {page.str(visit.of, 'lead') && (
+            <p class="lead" data-jtk-path={page.pathAt(visit.at, 'lead')}>{page.str(visit.of, 'lead')}</p>
+          )}
+          <div class="prose" data-jtk-path={page.pathAt(visit.at, 'body')} set:html={md(page.str(visit.of, 'body'))} />
+        </div>
+        <div class="facts" data-jtk-fixed>
+          <div>
+            <h2>{FOOTER.find}</h2>
+            <p>
+              {BUSINESS.street}
+              <br />
+              {BUSINESS.postalCode} {BUSINESS.city}
+            </p>
+          </div>
+          <div>
+            <h2>{FOOTER.write}</h2>
+            <p>
+              <a href={`tel:${BUSINESS.phoneDial}`}>{BUSINESS.phoneDisplay}</a>
+              <br />
+              <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
+            </p>
+          </div>
+          <div>
+            <h2>{FOOTER.hours}</h2>
+            <OpeningHours locale={META.lang as 'uk' | 'de' | 'en'} />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band band--deep band--ask" id="contact" data-reveal="settle">
+      <div class="band__inner band__inner--form">
+        <LeadFormFor page={page} at={cta.at} of={cta.of} />
+      </div>
+    </section>
+
+    <section class="band" data-reveal="settle">
+      <div class="band__inner">
+        <h2 data-jtk-path={page.pathAt(faq.at, 'title')}>{page.str(faq.of, 'title')}</h2>
+        <ul class="faq">
+          {page.rows(faq.of, 'items').map((item, i) => (
+            <li>
+              <details>
+                <summary data-jtk-path={page.pathAt(faq.at, 'items', i, 'question')}>{text(item, 'question')}</summary>
+                <p data-jtk-path={page.pathAt(faq.at, 'items', i, 'answer')}>{text(item, 'answer')}</p>
+              </details>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </main>
+</Layout>

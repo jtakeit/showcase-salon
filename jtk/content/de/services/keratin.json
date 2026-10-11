@@ -1,0 +1,21 @@
+{
+  "blocks": [
+    {
+      "_key": "ekeratin",
+      "costs": 16000,
+      "takes": 90,
+      "title": "Keratin-Glättung",
+      "type": "service",
+      "v": 1
+    }
+  ],
+  "collection": "services",
+  "locale": "de",
+  "path": "/de/services/keratin",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

@@ -1,0 +1,96 @@
+---
+/**
+ * The booking form — `@jtakeit/kit`'s, placed by this page.
+ *
+ * The markup is `renderBookingForm`'s and the behaviour is the kit's
+ * `<jtk-booking>` element; this component only reads the page's props and
+ * says where `/api/` is from here. It used to carry both itself (973 lines,
+ * on 4 October 2026), and a site on any other generator had to reproduce
+ * them by hand — so they moved to the kit, where Astro imports them like
+ * anybody else (wiki/66, layer B). What this component is for a site is
+ * unchanged: a reference for the flow, restyled before it goes out — the
+ * look is the site's, the behaviour is the platform's protocol and is not
+ * the site's to rewrite.
+ *
+ * The rules — when the business is open, how long a slot is, whether a time
+ * is still free, what it costs — live in one place, and it is not here: the
+ * platform serves six addresses on the site's own host and the element draws
+ * what they answer. `docs/booking.md` has the whole of it.
+ *
+ * ── what the page passes in ─────────────────────────────────────────────────
+ *
+ * The services and the resources are collection entries the owner edits, so
+ * they arrive as props from the page that reads the collections. Slugs are
+ * what the platform books against; titles are what the visitor reads.
+ */
+import { renderBookingForm } from '@jtakeit/kit/booking';
+import { siteCurrency } from '../lib/site';
+import '@jtakeit/kit/booking.css';
+import { under } from '../lib/under';
+
+interface Named {
+  slug: string;
+  title: string;
+  /** Minutes and minor units, for the running total when several are picked. */
+  takes?: number;
+  costs?: number;
+  /** A price by the hour of the week instead of `costs` (rows of day, from, until, costs): the list says «from …», the price is the slot's. */
+  rates?: { day: string; from: number; until: number; costs: number }[];
+  /** `'person'` for a price times the party — a class per place, shoes. */
+  per?: 'booking' | 'person';
+  /** A heading the services are listed under, where the catalogue groups them. */
+  group?: string;
+  /** For a resource: the services they perform, by slug — the form greys the others out once they are chosen. */
+  does?: string[];
+}
+
+interface Props {
+  services: Named[];
+  /** Empty for a solo business: the platform assigns. */
+  resources?: Named[];
+  /** The site's locale — decides the words. */
+  locale: 'uk' | 'de' | 'en';
+  /** How many days ahead the picker offers. The platform clamps to its own horizon. */
+  daysAhead?: number;
+  /**
+   * Whether a visitor may pick several services for one visit — the module's
+   * `combine` setting, read from `jtk/bookings.json`. On, the services are a
+   * checklist with a running total; off, one choice. The platform holds the
+   * same rule, so a form that lies here is refused there.
+   */
+  combine?: boolean;
+  /** The site's currency, for the running total. */
+  currency?: string;
+  /**
+   * What the business sells by — the module's `scale`, read from
+   * `jtk/bookings.json`: `'daily'` for one that lets things by the day. The
+   * platform's own answer carries the scale too and wins while the page runs;
+   * this decides the words drawn before it has answered.
+   */
+  scale?: string;
+  /**
+   * The kind of business — the module's `kind`, read from `jtk/bookings.json`.
+   * For any kind but a salon's the kind's words are held back until the
+   * platform has said them, rather than shown in a salon's for a moment.
+   */
+  kind?: string;
+  /** The days the business opens, by name — the week of days strikes the others out. From `jtk/bookings.json`'s hours. */
+  open?: string[];
+  /**
+   * The form's look — two steps, the week of days, the times by the part of
+   * the day, the drawn choice of whom — on by default (`@jtakeit/kit`'s
+   * `booking-ui`). `false` for the plain form, or the pieces by name.
+   */
+  ui?: boolean | string;
+}
+
+const { services, resources = [], locale, daysAhead = 30, combine = false, currency = siteCurrency, scale = '', kind = '', open = [], ui = true } = Astro.props;
+
+const html = renderBookingForm({ services, resources, locale, daysAhead, combine, currency, scale, kind, open, ui, api: under('/api/') });
+---
+
+<Fragment set:html={html} />
+
+<script>
+  import '@jtakeit/kit/elements/booking';
+</script>

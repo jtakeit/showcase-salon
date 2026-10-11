@@ -1,0 +1,21 @@
+{
+  "blocks": [
+    {
+      "_key": "echildre",
+      "costs": 4000,
+      "takes": 30,
+      "title": "Kinderhaarschnitt (unter 12)",
+      "type": "service",
+      "v": 1
+    }
+  ],
+  "collection": "services",
+  "locale": "de",
+  "path": "/de/services/childrens-cut",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

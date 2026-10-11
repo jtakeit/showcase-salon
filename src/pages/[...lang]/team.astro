@@ -1,0 +1,73 @@
+---
+/**
+ * The team: every master the collection holds, with their card. The entries
+ * have pages of their own (/masters/<slug>); this is the way to them.
+ */
+import Layout from '../../layouts/Layout.astro';
+import Shot from '../../components/Shot.astro';
+import { readPage } from '../../lib/page';
+import { listed } from '../../lib/entries';
+import { under } from '../../lib/under';
+import { localeParams, withLocale } from '../../lib/locale';
+import { slugOf } from '../../lib/entries';
+
+export const getStaticPaths = localeParams;
+
+const locale = Astro.params.lang ?? '';
+
+const page = readPage(withLocale(locale, '/team'));
+const team = page.block('team');
+const services = await listed('services', locale);
+const masters = await listed('masters', locale);
+const servicesByID = new Map(services.map((one) => [slugOf(one), String(one.data.title ?? one.id)]));
+const does = (entry: { data: Record<string, unknown> }): string[] =>
+  ((entry.data.does as { service: string }[] | undefined) ?? []).map((row) => servicesByID.get(row.service) ?? row.service);
+const clock = (minutes: number) => `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+const hoursOf = (entry: { data: Record<string, unknown> }): string[] =>
+  ((entry.data.hours as { day: string; opens: number; closes: number }[] | undefined) ?? []).map(
+    (row) => `${row.day.replace(/^./, (c) => c.toUpperCase())} ${clock(row.opens)}–${clock(row.closes)}`,
+  );
+---
+
+<Layout title={page.str(team.of, 'title')} description={page.str(team.of, 'lead')} alternates={page.alternates}>
+  <main id="content">
+    <section class="band band--team-page">
+      <div class="band__inner">
+        {page.str(team.of, 'eyebrow') && (
+          <p class="eyebrow" data-jtk-path={page.pathAt(team.at, 'eyebrow')}>{page.str(team.of, 'eyebrow')}</p>
+        )}
+        <h1 data-jtk-path={page.pathAt(team.at, 'title')}>{page.str(team.of, 'title')}</h1>
+        {page.str(team.of, 'lead') && (
+          <p class="lead" data-jtk-path={page.pathAt(team.at, 'lead')}>{page.str(team.of, 'lead')}</p>
+        )}
+        <ul class="masters masters--page" data-reveal="stagger">
+          {masters.map((entry) => (
+            <li>
+              <a class="master" href={under(withLocale(locale, `/masters/${slugOf(entry)}`))}>
+                {typeof entry.data.cover === 'string' && entry.data.cover !== '' && (
+                  <Shot
+                    name={entry.data.cover}
+                    path={`page:${withLocale(locale, `/masters/${slugOf(entry)}`)}:blocks[0].cover`}
+                    ratio="4 / 5"
+                    width={720}
+                    focus="50% 30%"
+                    sizes="(min-width: 56rem) 30vw, 92vw"
+                  />
+                )}
+                <h3 data-jtk-path={`page:${withLocale(locale, `/masters/${slugOf(entry)}`)}:blocks[0].title`}>{String(entry.data.title ?? entry.id)}</h3>
+                {does(entry).length > 0 && <p class="master__does" data-jtk-fixed>{does(entry).join(' · ')}</p>}
+                {hoursOf(entry).length > 0 && <p class="master__hours" data-jtk-fixed>{hoursOf(entry).join(' · ')}</p>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .masters--page {
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+  }
+</style>

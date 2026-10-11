@@ -1,0 +1,425 @@
+---
+/**
+ * One entry of one collection — a blog post, a work, a job.
+ *
+ * ── one file for every collection, and why it is a starting point ───────────
+ *
+ * This route generates every entry of every collection the site declares, so a
+ * new collection is an entry in `COLLECTIONS` and its listing page, and never a
+ * second copy of this file. What it renders is deliberately plain: a heading, a
+ * picture where there is one, and the body. Exactly like `Blocks.astro`, it is
+ * the thing that makes a site buildable on the first commit, not the design.
+ *
+ * **The design pass replaces what is inside `<article>`. What must survive it
+ * is the annotation.** Every field the owner may edit carries its
+ * `data-jtk-path`, `annotation-lint.mjs` fails the build without one, and an
+ * element that loses its path stops opening the editor *silently*.
+ *
+ * An entry's document opens with the post — its title, its date, its cover and
+ * its prose, always at `blocks[0].<field>`. Everything after it is whatever the
+ * collection lets a post hold (the platform's wiki/30), and its paths are
+ * `blocks[N].<field>` exactly as on any other page.
+ *
+ * ── a hidden entry is built ─────────────────────────────────────────────────
+ *
+ * `getStaticPaths` does **not** filter by `visible`. That is on purpose: an
+ * entry nobody has finished still has to be looked at before it is finished,
+ * and the studio's edge serves such a page only to a session that is editing
+ * the site. Every place that *lists* entries filters — see `src/lib/entries.ts`
+ * — and this one renders.
+ */
+import { everyEntry, rendered, routeOf, slugOf, alternatesOf, listed } from '../lib/entries';
+import { withLocale, langOf } from '../lib/locale';
+import { copyFor } from '../copy';
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import { BLOCKS, COLLECTIONS, MODULES, words, type Field } from '../content/blocks';
+import { isUpload, uploaded } from '../lib/uploads';
+import { photo } from '../lib/photos';
+import { money as priced } from '../lib/money';
+import { under } from '../lib/under';
+
+export async function getStaticPaths() {
+  const paths = [];
+
+  for (const collection of COLLECTIONS) {
+    // A collection without pages — a price list, the tables of a restaurant —
+    // has none: its entries are rows of its listing (`[...listing].astro`),
+    // and the platform expects no route for them.
+    if (collection.pages === false) continue;
+    const entries = await everyEntry(collection.name);
+    for (const entry of entries) {
+      paths.push({
+        params: { entry: routeOf(collection, entry) },
+        props: { entry, collection },
+      });
+    }
+  }
+  return paths;
+}
+
+const { entry, collection } = Astro.props;
+const locale = String(entry.data.locale ?? '');
+const LANG = langOf(locale);
+const { STRIPS } = copyFor(locale);
+const alternates = await alternatesOf(collection, entry);
+
+/*
+ * Whether this entry's type has a body at all. A post has; a car, a doctor, an
+ * apartment has not — its page is its fields — and a body drawn for one was an
+ * editable place the catalogue does not declare: the admin would open an
+ * editor on nothing, and `jtk catalogue` said so for every car of a rental
+ * (30 September 2026).
+ */
+const hasBody = (BLOCKS.find((one) => one.type === collection.type)?.fields ?? [])
+  .some((field) => field.key === 'body');
+const data = entry.data as Record<string, unknown>;
+const { Content } = await rendered(entry);
+
+/**
+ * A value from a document as a list of records.
+ *
+ * A function rather than a cast written where it is needed, because a `as
+ * Record<string, unknown>[]` **inside a `{ }` expression in the template** is
+ * not valid Astro: the compiler turns the template into TSX and the cast is
+ * read as a comparison, which produced nine errors starting with "Generic type
+ * 'Record' requires 2 type argument(s)" and cascading to the end of the file.
+ * Casts belong in the frontmatter; the template calls this.
+ *
+ * It also answers for a document that holds something other than a list, which
+ * a hand-edited one can.
+ */
+function records(value: unknown): Record<string, unknown>[] {
+  return Array.isArray(value) ? (value as Record<string, unknown>[]) : [];
+}
+
+/** Everything after the post itself, in the order the owner put it in. */
+const rest = records(data.rest);
+
+const title = typeof data.title === 'string' ? data.title : '';
+const excerpt = typeof data.excerpt === 'string' ? data.excerpt : '';
+const cover = typeof data.cover === 'string' && data.cover !== ''
+  ? (isUpload(data.cover) ? uploaded(data.cover) : photo(data.cover))
+  : undefined;
+
+/*
+ * ── every field the catalogue declares, not three ───────────────────────────
+ *
+ * The heading, the cover and the body are drawn by hand above; everything else
+ * the entry's type declares is drawn here, in the catalogue's order. A room
+ * type's price, an apartment's guests, a master's hours: an entry's page is
+ * its fields, and a field the owner fills in that no page shows is a field
+ * the guest never reads. A hotel's room type with a price refused every build
+ * (JTK_E_UNANNOTATED_FIELD …: blocks[0].costs, the night run of 2 October
+ * 2026), and the fields the check does not look for — a number, a list — were
+ * dropped from the page without a word.
+ *
+ * A field the owner edits by tapping it carries its `data-jtk-path`, by the
+ * same rule `annotation-lint.mjs` checks; the rest are edited in the panel
+ * beside the page and are drawn plain.
+ */
+const isPost = collection.name === 'blog';
+const DRAWN = new Set(isPost ? ['title', 'cover', 'body', 'date', 'excerpt'] : ['title', 'cover', 'body']);
+const dated = typeof data.date === 'string' && !Number.isNaN(new Date(data.date).getTime())
+  ? new Intl.DateTimeFormat(LANG, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(data.date))
+  : '';
+const TAPPABLE = new Set(['text', 'textarea', 'richtext_lite', 'markdown', 'media', 'money', 'duration']);
+const tappable = (field: Field) =>
+  TAPPABLE.has(field.kind) && field.client_editable !== false && field.no_tap_target !== true;
+
+const siteFiles = import.meta.glob<{ business?: { currency?: string } }>('/jtk/site.json', { eager: true, import: 'default' });
+const currency = Object.values(siteFiles)[0]?.business?.currency ?? '';
+
+/** A length as the trade says it: whole days, whole hours, or minutes. */
+function length(minutes: number): string {
+  const [unit, n] = minutes % 1440 === 0 ? ['day', minutes / 1440] : minutes % 60 === 0 ? ['hour', minutes / 60] : ['minute', minutes];
+  return new Intl.NumberFormat(LANG, { style: 'unit', unit, unitDisplay: 'long' }).format(n);
+}
+
+const money = (minor: number): string => priced(minor, currency, LANG);
+
+/** 540 is 09:00. */
+function clock(minutes: number): string {
+  return `${String(Math.floor(minutes / 60) % 24).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+}
+
+/** monday … sunday in the site's language: 1 January 2024 was a Monday. */
+const WEEK = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+function weekday(day: string): string {
+  const at = WEEK.indexOf(day);
+  return at < 0 ? day : new Intl.DateTimeFormat(LANG, { weekday: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(2024, 0, 1 + at)));
+}
+
+/*
+ * The titles a slug stands for: a `ref` names its collection, and a
+ * resource's `does` names services of the diary's own.
+ */
+const titles = new Map<string, Map<string, string>>();
+async function titlesOf(name: string | undefined): Promise<Map<string, string>> {
+  if (!name || !COLLECTIONS.some((one) => one.name === name)) return new Map();
+  if (!titles.has(name)) {
+    titles.set(name, new Map((await listed(name, locale)).map((one) => [slugOf(one), String(one.data.title ?? one.id)])));
+  }
+  return titles.get(name)!;
+}
+
+/** One value as words, for a field that is drawn plain. */
+async function spoken(field: Field, value: unknown): Promise<string> {
+  if (value === undefined || value === null || value === '') return '';
+  switch (field.kind) {
+    case 'money': return money(Number(value));
+    case 'duration': return length(Number(value));
+    case 'time_of_day': return clock(Number(value));
+    case 'date': {
+      const day = new Date(String(value));
+      return Number.isNaN(day.getTime()) ? String(value) : new Intl.DateTimeFormat(LANG, { dateStyle: 'long', timeZone: 'UTC' }).format(day);
+    }
+    case 'select': {
+      const label = field.option_labels?.[String(value)];
+      if (label !== undefined) return words(label, LANG);
+      return WEEK.includes(String(value)) ? weekday(String(value)) : String(value);
+    }
+    case 'bool': return value === true ? words(field.label, LANG) : '';
+    case 'ref': return (await titlesOf(field.ref)).get(String(value)) ?? String(value);
+    case 'list': return '';
+    default:
+      if (field.key === 'service' && MODULES.bookings?.services) {
+        return (await titlesOf(MODULES.bookings.services)).get(String(value)) ?? String(value);
+      }
+      return String(value);
+  }
+}
+
+/** A row of a list as one line: a week's row is «понеділок 09:00–18:00». */
+async function rowSaid(of: Field[], row: Record<string, unknown>): Promise<string> {
+  const keys = new Set(of.map((one) => one.key));
+  if (keys.has('opens') && keys.has('closes')) {
+    const day = of.find((one) => one.key === 'day');
+    const when = `${clock(Number(row.opens))}–${clock(Number(row.closes))}`;
+    return day ? `${await spoken(day, row.day)} ${when}` : when;
+  }
+  const parts: string[] = [];
+  for (const one of of) {
+    const part = await spoken(one, row[one.key]);
+    if (part !== '') parts.push(part);
+  }
+  return parts.join(' · ');
+}
+
+type Picture = { file: ImageMetadata; alt: string; path: string };
+type Fact =
+  | { key: string; label: string; kind: 'pictures'; pictures: Picture[] }
+  | { key: string; label: string; kind: 'picture'; file: ImageMetadata; path: string }
+  | { key: string; label: string; kind: 'text'; text: string; path?: string; href?: string }
+  | { key: string; label: string; kind: 'rows'; rows: string[] };
+
+const facts: Fact[] = [];
+for (const field of BLOCKS.find((one) => one.type === collection.type)?.fields ?? []) {
+  if (DRAWN.has(field.key)) continue;
+  const value = data[field.key];
+  if (value === undefined || value === null || value === '') continue;
+  const label = words(field.label, LANG);
+  const path = `blocks[0].${field.key}`;
+
+  if (field.kind === 'media') {
+    const files = (field.multiple ? records(value) : [{ src: value, alt: title }])
+      .map((one, index) => {
+        const src = String(one.src ?? '');
+        return { file: isUpload(src) ? uploaded(src) : photo(src), alt: String(one.alt ?? title), path: `${path}[${index}].src` };
+      })
+      .filter((one): one is Picture => one.file !== undefined);
+    if (files.length === 0) continue;
+    if (field.multiple) facts.push({ key: field.key, label, kind: 'pictures', pictures: files });
+    else facts.push({ key: field.key, label, kind: 'picture', file: files[0].file, path });
+    continue;
+  }
+  if (field.kind === 'list') {
+    const rows: string[] = [];
+    for (const row of records(value)) {
+      const line = await rowSaid(field.of ?? [], row);
+      if (line !== '') rows.push(line);
+    }
+    if (rows.length > 0) facts.push({ key: field.key, label, kind: 'rows', rows });
+    continue;
+  }
+  const text = await spoken(field, value);
+  if (text === '') continue;
+  const href = field.kind === 'url' ? String(value) : field.kind === 'email' ? `mailto:${value}` : field.kind === 'tel' ? `tel:${String(value).replace(/[^+\d]/g, '')}` : undefined;
+  facts.push({ key: field.key, label, kind: 'text', text, href, path: tappable(field) ? path : undefined });
+}
+
+/**
+ * The entry as a thing search engines and assistants can quote.
+ *
+ * `datePublished` is the field the catalogue reserves, which is why it may be
+ * read by name here: the five keys of an entry are the admin's vocabulary and
+ * not a site's to rename.
+ */
+/**
+ * What a search result says, where somebody wrote it.
+ *
+ * The admin has a card for these two — the title in a result list and the
+ * sentence under it — and they appear nowhere on the page, which is exactly why
+ * they are edited in a form rather than by tapping. Empty, a post is found by
+ * its own heading and its announcement, so this is a fallback and never a
+ * second pair of fields that must be filled in.
+ */
+const seo = (data.seo ?? {}) as Record<string, unknown>;
+const said = (key: string): string =>
+  typeof seo[key] === 'string' ? (seo[key] as string).trim() : '';
+
+const schema = {
+  '@type': 'Article',
+  headline: title,
+  datePublished: typeof data.date === 'string' ? data.date : undefined,
+  description: excerpt || undefined,
+};
+---
+
+<Layout title={said('title') || title} description={said('description') || excerpt} schema={schema} alternates={alternates}>
+  <main id="content">
+    <article class={isPost ? 'entry entry--post' : 'entry'}>
+      {isPost && (
+        <p class="entry__meta">
+          <a class="entry__back" href={under(withLocale(locale, '/blog'))} data-jtk-fixed>{STRIPS.blog.by}</a>
+          {dated && <time datetime={String(data.date)} data-jtk-fixed>{dated}</time>}
+        </p>
+      )}
+      <h1 data-jtk-path="blocks[0].title">{title}</h1>
+      {isPost && excerpt && <p class="lead entry__lead" data-jtk-fixed>{excerpt}</p>}
+
+      {
+        cover && (
+          <Image
+            src={cover}
+            alt={title}
+            data-jtk-path="blocks[0].cover"
+            widths={[640, 1280, 1920]}
+            sizes="(min-width: 900px) 60rem, 92vw"
+            layout="none"
+          />
+        )
+      }
+
+      {
+        facts.length > 0 && (
+          <dl class="entry-facts">
+            {facts.map((fact) => (
+              <div class="entry-fact" data-field={fact.key}>
+                {/* The label is the catalogue's; a value with no path is edited in
+                    the panel beside the page, not by tapping — both are said fixed,
+                    so the check does not read them as words the owner cannot reach. */}
+                <dt data-jtk-fixed>{fact.label}</dt>
+                {fact.kind === 'text' && (
+                  <dd data-jtk-path={fact.path} data-jtk-fixed={fact.path ? undefined : true}>{fact.href ? <a href={fact.href}>{fact.text}</a> : fact.text}</dd>
+                )}
+                {fact.kind === 'rows' && (
+                  <dd data-jtk-fixed><ul>{fact.rows.map((row) => <li>{row}</li>)}</ul></dd>
+                )}
+                {fact.kind === 'picture' && (
+                  <dd>
+                    <Image src={fact.file} alt={title} data-jtk-path={fact.path} widths={[640, 1280]} sizes="(min-width: 900px) 30rem, 92vw" layout="none" />
+                  </dd>
+                )}
+                {fact.kind === 'pictures' && (
+                  <dd class="entry-wall">
+                    {fact.pictures.map((one) => (
+                      <Image src={one.file} alt={one.alt} data-jtk-path={one.path} widths={[640, 1280]} sizes="(min-width: 900px) 30rem, 92vw" layout="none" />
+                    ))}
+                  </dd>
+                )}
+              </div>
+            ))}
+          </dl>
+        )
+      }
+
+      {/*
+        One element for the whole body, because the body is one field. The
+        editor opens it full screen — nine hundred words is not a popover — and
+        what is inside is markdown Astro rendered, pictures and all.
+      */}
+      {hasBody && <div class="entry-body" data-jtk-path="blocks[0].body"><Content /></div>}
+      {collection.name === 'masters' && (
+        <p class="entry__book" data-jtk-fixed>
+          <a class="btn" href={under(`${withLocale(locale, '/services')}?with=${slugOf(entry)}#book`)}>{STRIPS.team.bookWith.replace('{name}', title.split(' ')[0] || title)}</a>
+        </p>
+      )}
+
+      {/*
+        And the rest of the post, in the order the owner put it in.
+
+        A post is a *sequence*: its opening prose above, then runs of prose and
+        whatever else it holds, interleaved. A post is written rather than
+        designed, so the owner arranges these in the admin — but *which* types
+        may be in one is this repository's to say, in `COLLECTIONS[].body`, and
+        `text` must be among them or the writing cannot be broken by anything.
+
+        A gallery arrives with the arrangement it is in — `block.view`, always
+        one of the ones its type declares. Draw each one differently: that menu
+        is the whole reason the owner may choose, and a `view` that changes
+        nothing on the page is a choice this repository lied about offering.
+
+        Plain on purpose, exactly like `Blocks.astro`: what the design pass
+        replaces is what is inside, and what must survive it is the
+        `data-jtk-path` on every field the owner may edit.
+      */}
+      {
+        rest.map((block, offset) => {
+          const at = offset + 1;
+
+          /*
+           * A run of prose. A post is a sequence — prose, a gallery, more
+           * prose — and this is what the runs after the first are. Rendered by
+           * the loader, because Astro renders one body per entry and knows
+           * nothing about a second.
+           */
+          if (block.type === 'text') {
+            return (
+              <div
+                class="entry-body"
+                data-jtk-path={`blocks[${at}].body`}
+                set:html={String(block.html ?? '')}
+              />
+            );
+          }
+
+          const pictures = records(block.work ?? block.items);
+
+          return (
+            <div class="entry-wall" data-view={String(block.view ?? '')}>
+              {pictures.map((picture, index) => {
+                /*
+                 * The same two answers the cover has, for the same reason: a
+                 * value is either a key in the studio's bucket, which the build
+                 * downloaded, or the name of a photograph this repository
+                 * ships. Reading only the first renders nothing at all for the
+                 * second, with no error until the build refuses the undefined.
+                 */
+                const src = String(picture.src ?? '');
+                const file = isUpload(src) ? uploaded(src) : photo(src);
+                if (!file) return null;
+
+                return (
+                <Image
+                  src={file}
+                  alt={String(picture.alt ?? '')}
+                  data-jtk-path={`blocks[${at}].work[${index}].src`}
+                  widths={[640, 1280]}
+                  sizes="(min-width: 900px) 30rem, 92vw"
+                  layout="none"
+                />
+                );
+              })}
+            </div>
+          );
+        })
+      }
+      {isPost && (
+        <p class="entry__book" data-jtk-fixed>
+          <a class="more" href={under(withLocale(locale, '/blog'))}>{STRIPS.blog.back}</a>
+        </p>
+      )}
+    </article>
+  </main>
+</Layout>

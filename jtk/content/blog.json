@@ -1,0 +1,18 @@
+{
+  "blocks": [
+    {
+      "_key": "intro1",
+      "eyebrow": "Journal",
+      "lead": "Short pieces on hair, colour and the salon — what we would say across the basin if there were time.",
+      "title": "Notes from the chair",
+      "type": "intro",
+      "v": 1
+    }
+  ],
+  "path": "/blog",
+  "schema_version": 1,
+  "seo": {
+    "description": "Short posts from Atelier Nord on hair, colour and the salon.",
+    "title": "Journal"
+  }
+}

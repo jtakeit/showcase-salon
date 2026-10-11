@@ -1,0 +1,84 @@
+---
+/**
+ * The journal: every post of the blog collection in this language, newest
+ * first. The heading and the line under it are the page's own document
+ * (`/blog`, `/de/blog`); every tile's words are that post's: the title and
+ * the cover annotated with the post's page-qualified path, so a tap opens
+ * the post, the date and the excerpt plain — they are `no_tap_target`,
+ * edited in the panel beside the post, and the lint refuses a tap on them.
+ */
+import Layout from '../../../layouts/Layout.astro';
+import Shot from '../../../components/Shot.astro';
+import { readPage } from '../../../lib/page';
+import { listed, href, slugOf } from '../../../lib/entries';
+import { collectionNamed } from '../../../lib/entries';
+import { localeParams, langOf, withLocale } from '../../../lib/locale';
+import { copyFor } from '../../../copy';
+
+export const getStaticPaths = localeParams;
+
+const locale = Astro.params.lang ?? '';
+const C = copyFor(locale);
+const page = readPage(withLocale(locale, '/blog'));
+const intro = page.block('intro');
+const blog = collectionNamed('blog');
+const posts = await listed('blog', locale);
+const when = new Intl.DateTimeFormat(langOf(locale), { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const dated = (value: unknown): string => {
+  const day = new Date(String(value ?? ''));
+  return Number.isNaN(day.getTime()) ? '' : when.format(day);
+};
+---
+
+<Layout title={page.seo.title || page.str(intro.of, 'title')} description={page.seo.description || page.str(intro.of, 'lead')} alternates={page.alternates}>
+  <main id="content">
+    <section class="band band--journal">
+      <div class="band__inner">
+        {page.str(intro.of, 'eyebrow') && (
+          <p class="eyebrow" data-jtk-path={page.pathAt(intro.at, 'eyebrow')}>{page.str(intro.of, 'eyebrow')}</p>
+        )}
+        <h1 data-jtk-path={page.pathAt(intro.at, 'title')}>{page.str(intro.of, 'title')}</h1>
+        {page.str(intro.of, 'lead') && (
+          <p class="lead" data-jtk-path={page.pathAt(intro.at, 'lead')}>{page.str(intro.of, 'lead')}</p>
+        )}
+
+        {posts.length === 0 ? (
+          <p class="journal__empty" data-jtk-fixed>{C.STRIPS.blog.empty}</p>
+        ) : (
+          <ul class="posts" data-reveal="stagger">
+            {posts.map((post, i) => {
+              const at = withLocale(locale, `${blog.prefix}/${slugOf(post)}`);
+              const cover = typeof post.data.cover === 'string' ? post.data.cover : '';
+              return (
+                <li class={`post-card${i === 0 ? ' post-card--first' : ''}`}>
+                  <a class="post-card__link" href={href(blog, post)}>
+                    {cover && (
+                      <Shot
+                        name={cover}
+                        path={`page:${at}:blocks[0].cover`}
+                        ratio={i === 0 ? '16 / 9' : '4 / 3'}
+                        width={i === 0 ? 1400 : 720}
+                        eager={i === 0}
+                        sizes={i === 0 ? '(min-width: 56rem) 70vw, 92vw' : '(min-width: 56rem) 30vw, 92vw'}
+                      />
+                    )}
+                    <div class="post-card__text">
+                      {dated(post.data.date) && (
+                        <time class="post-card__date" datetime={String(post.data.date)} data-jtk-fixed>{dated(post.data.date)}</time>
+                      )}
+                      <h2 data-jtk-path={`page:${at}:blocks[0].title`}>{String(post.data.title ?? '')}</h2>
+                      {typeof post.data.excerpt === 'string' && post.data.excerpt !== '' && (
+                        <p data-jtk-fixed>{post.data.excerpt}</p>
+                      )}
+                      <span class="post-card__read" data-jtk-fixed>{C.STRIPS.blog.read} →</span>
+                    </div>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    </section>
+  </main>
+</Layout>

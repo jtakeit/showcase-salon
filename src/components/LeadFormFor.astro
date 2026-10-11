@@ -1,0 +1,64 @@
+---
+/**
+ * The enquiry form bound to a page other than the home page.
+ *
+ * `LeadForm.astro` reads the home document's `cta_banner` — the copy and the
+ * annotations — which is right on the home page and wrong everywhere else:
+ * the contact page's form would carry the home page's words and the home
+ * page's paths. This one takes the page's own reading and the block it
+ * found, and binds the same form to those.
+ */
+import { renderLeadForm } from '@jtakeit/kit/lead';
+import '@jtakeit/kit/lead.css';
+import { copyFor } from '../copy';
+import { localeOf, langOf } from '../lib/locale';
+import type { Reading } from '../lib/page';
+import { under } from '../lib/under';
+import { BLOCKS, words, type Field } from '../content/blocks';
+
+const locale = localeOf(Astro.url.pathname);
+const LANG = langOf(locale);
+const { FORM } = copyFor(locale);
+
+interface Props {
+  page: Reading;
+  at: number;
+  of: Record<string, unknown>;
+}
+const { page, at, of } = Astro.props;
+
+const declared: Field[] = BLOCKS.find((block) => block.type === 'cta_banner')?.asks ?? [];
+const asks = declared.map((ask) => ({
+  key: ask.key,
+  label: words(ask.label, LANG),
+  kind: ask.kind,
+  required: ask.required,
+  max: ask.max,
+  min: ask.min,
+  options: (ask.options ?? []).map((value) => ({ value, label: words(ask.option_labels?.[value], LANG) })),
+}));
+const copy = {
+  ...FORM,
+  title: page.str(of as never, 'title'),
+  lead: page.str(of as never, 'lead'),
+  name: page.str(of as never, 'name_label'),
+  contact: page.str(of as never, 'contact_label'),
+  message: page.str(of as never, 'message_label'),
+  requiredNote: page.str(of as never, 'required_note'),
+  submit: page.str(of as never, 'cta_label'),
+};
+const paths = {
+  title: page.pathAt(at, 'title'),
+  lead: page.pathAt(at, 'lead'),
+  name_label: page.pathAt(at, 'name_label'),
+  contact_label: page.pathAt(at, 'contact_label'),
+  message_label: page.pathAt(at, 'message_label'),
+  required_note: page.pathAt(at, 'required_note'),
+  cta_label: page.pathAt(at, 'cta_label'),
+};
+const html = renderLeadForm({ action: under('/api/lead'), copy, asks, paths });
+---
+<Fragment set:html={html} />
+<script>
+  import '@jtakeit/kit/elements/lead';
+</script>

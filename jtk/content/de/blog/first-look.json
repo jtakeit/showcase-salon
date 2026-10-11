@@ -1,0 +1,23 @@
+{
+  "blocks": [
+    {
+      "_key": "pfirst-",
+      "body": "Jede neue Kundin, jeder neue Kunde bekommt fünfzehn Minuten, bevor irgendetwas geschnitten wird: Sie sitzen, wir schauen, wir reden. Keine Schere auf dem Tresen, niemand mischt hinten Farbe an.\n\nAngefangen hat es als Mittel gegen das, wovor sich alle im Beruf fürchten — die Kundin, die «nur die Spitzen» sagt und etwas meint, das sie bei jemand anderem gesehen hat. Zwanzig Minuten Gespräch darüber, was Ihr Haar an einem gewöhnlichen Dienstag macht, sparen eine Stunde Reparatur am Samstag darauf.\n\n## Was wir fragen\n\nWie Sie es waschen. Wie lange Sie morgens brauchen. Was Ihnen am letzten Schnitt gefallen hat, und was nach einer Woche nicht mehr. Ob Sie nichts damit tun wollen oder gern etwas damit tun.\n\n## Was wir nicht tun\n\nWir buchen den Termin nicht für Sie, während Sie noch da sitzen. Sie gehen nach Hause, denken nach, buchen online, wenn Sie wollen. Die meisten buchen noch am selben Abend; einige kommen nie wieder, und genau dafür sind die fünfzehn Minuten da.",
+      "cover": "tools",
+      "date": "2026-09-08",
+      "excerpt": "Fünfzehn Minuten auf dem Stuhl, ohne Schere. Die meisten halten es für ein Verkaufsgespräch. Es ist das Gegenteil.",
+      "title": "Der gratis erste Blick, und warum wir daran festhalten",
+      "type": "post",
+      "v": 1
+    }
+  ],
+  "collection": "blog",
+  "locale": "de",
+  "path": "/de/blog/first-look",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

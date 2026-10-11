@@ -1,0 +1,94 @@
+{
+  "blocks": [
+    {
+      "_key": "hero0001",
+      "cta_href": "#services",
+      "cta_label": "Book a time",
+      "eyebrow": "Zürich · Kreis 5",
+      "image": "hero-room",
+      "image_alt": "The salon: three black chairs under round mirrors on a dark wall, a marble floor",
+      "lead": "Three chairs on Josefstrasse. Book a time online, come in, and leave looking like yourself on a good day.",
+      "title": "A good haircut, without the fuss",
+      "type": "hero",
+      "v": 1
+    },
+    {
+      "_key": "pled0001",
+      "items": [
+        {
+          "text": "Booked by the quarter hour and started on it. If we are running late, you hear from us before you leave the house.",
+          "title": "On time"
+        },
+        {
+          "text": "No products pushed across the counter, no treatment you did not come in for. The price on the list is the price.",
+          "title": "Nothing you did not ask for"
+        },
+        {
+          "text": "Fifteen minutes in the chair, no scissors, to talk about what your hair does and what you would like it to do.",
+          "title": "A first look is free"
+        }
+      ],
+      "title": "Three things we hold to",
+      "type": "pledges",
+      "v": 1
+    },
+    {
+      "_key": "text0001",
+      "body": "Atelier Nord opened in 2019 in a former print shop on Josefstrasse: three chairs, tall windows, a dark wall of round mirrors and no music you would not choose yourself. Noa, Elif and Jonas each have their own regulars and their own way of working, and the one thing they agree on is that a cut should still look right three weeks later.\n\nColour is mixed to your hair, not to a chart. The salon is a short walk from Hardbrücke station; there is a bike rack outside and a ramp at the door.",
+      "type": "text",
+      "v": 1
+    },
+    {
+      "_key": "team0001",
+      "eyebrow": "Who you will sit with",
+      "lead": "Book with whoever you like, or let the diary choose. Each of them does what is on their card, and nothing they would not be sure of.",
+      "title": "Three chairs, three hands",
+      "type": "team",
+      "v": 1
+    },
+    {
+      "_key": "ctab0001",
+      "contact_label": "Phone or email",
+      "cta_href": "#contact",
+      "cta_label": "Ask",
+      "form": true,
+      "lead": "Write to us: what your hair does, what you would like it to do. We answer the same day, Monday to Saturday.",
+      "message_label": "What it is about",
+      "name_label": "Your name",
+      "required_note": "We answer within the day. Nothing is booked until you confirm.",
+      "title": "Not sure what you need?",
+      "type": "cta_banner",
+      "v": 1
+    },
+    {
+      "_key": "ques0001",
+      "items": [
+        {
+          "answer": "Booking online is the sure way; a free chair is rare after lunch. If you are passing, come in and ask — if a chair is free, you are welcome.",
+          "question": "Do I have to book, or can I walk in?"
+        },
+        {
+          "answer": "At the salon, by card or TWINT, after the appointment. Nothing is paid online and nothing is charged for booking.",
+          "question": "How do I pay?"
+        },
+        {
+          "answer": "Cancel from the link in your confirmation up to three hours before. Later than that, send a message; we understand that life happens, and we ask only that it does not happen every time.",
+          "question": "What if I need to cancel?"
+        },
+        {
+          "answer": "Yes, under twelve at a children's price. Elif and Jonas are the patient ones; book them for a first haircut.",
+          "question": "Do you cut children's hair?"
+        }
+      ],
+      "title": "Questions people ask",
+      "type": "questions",
+      "v": 1
+    }
+  ],
+  "path": "/",
+  "schema_version": 1,
+  "seo": {
+    "description": "A three-chair hair salon on Josefstrasse, Zürich. Cuts, colour and blow-dries, booked online. Open Monday to Saturday.",
+    "title": "Atelier Nord — hair salon in Zürich"
+  }
+}

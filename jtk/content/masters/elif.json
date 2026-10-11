@@ -1,0 +1,35 @@
+{
+  "blocks": [
+    {
+      "_key": "eelif",
+      "body": "Long hair, children, and the kind of colour that looks like it grew that way — that is where I am happiest. I trained in Istanbul and Zürich, and the second taught me patience: a good blow-dry is twenty quiet minutes, not ten loud ones.\n\nIf it is your child's first haircut, book me. I have crayons, I have time, and I have never once finished a cut on a crying child.",
+      "cover": "elif",
+      "does": [
+        {
+          "service": "womens-cut"
+        },
+        {
+          "service": "childrens-cut"
+        },
+        {
+          "service": "colour"
+        },
+        {
+          "service": "blow-dry"
+        }
+      ],
+      "hours": [],
+      "title": "Elif Demir",
+      "type": "master",
+      "v": 1
+    }
+  ],
+  "collection": "masters",
+  "path": "/masters/elif",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

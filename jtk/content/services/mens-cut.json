@@ -1,0 +1,20 @@
+{
+  "blocks": [
+    {
+      "_key": "emens-cu",
+      "costs": 6500,
+      "takes": 45,
+      "title": "Men's cut",
+      "type": "service",
+      "v": 1
+    }
+  ],
+  "collection": "services",
+  "path": "/services/mens-cut",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

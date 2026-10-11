@@ -1,0 +1,48 @@
+{
+  "blocks": [
+    {
+      "_key": "visi0001",
+      "body": "From Hardbrücke, walk down Geroldstrasse and turn left at the bakery: the salon is the dark shopfront with the round mirrors. Trams 4 and 13 stop at Quellenstrasse, two minutes away.\n\nThere is a bike rack outside and a ramp at the door. Parking on the street is blue zone; the Hardbrücke garage is the sure thing on a Saturday.",
+      "lead": "Six minutes on foot from the station, on the quiet side of the street.",
+      "title": "Josefstrasse, by Hardbrücke",
+      "type": "visit",
+      "v": 1
+    },
+    {
+      "_key": "ctab0001",
+      "contact_label": "Phone or email",
+      "cta_href": "#contact",
+      "cta_label": "Send",
+      "form": true,
+      "lead": "A question, a photograph of what you have in mind, or a day that is not in the diary yet. We answer within the day.",
+      "message_label": "What it is about",
+      "name_label": "Your name",
+      "required_note": "Nothing is booked until you confirm. For a time, book online — it is quicker than writing.",
+      "title": "Write to us",
+      "type": "cta_banner",
+      "v": 1
+    },
+    {
+      "_key": "ques0001",
+      "items": [
+        {
+          "answer": "No. Every appointment starts at the basin; come as you are.",
+          "question": "Should I come with washed hair?"
+        },
+        {
+          "answer": "A child, yes, and there is a corner with crayons. A dog, if it is the kind that sleeps under a chair.",
+          "question": "Can I bring a child or a dog?"
+        }
+      ],
+      "title": "Before you come",
+      "type": "questions",
+      "v": 1
+    }
+  ],
+  "path": "/contact",
+  "schema_version": 1,
+  "seo": {
+    "description": "Atelier Nord, Josefstrasse, 8005 Zürich. Monday to Friday 9–18, Saturday 9–15. Write to us or book online.",
+    "title": "Contact and opening hours"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "blocks": [
+    {
+      "_key": "ehighlig",
+      "costs": 22000,
+      "takes": 150,
+      "title": "Highlights \u0026 balayage",
+      "type": "service",
+      "v": 1
+    }
+  ],
+  "collection": "services",
+  "path": "/services/highlights",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

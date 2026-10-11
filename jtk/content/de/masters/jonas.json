@@ -1,0 +1,33 @@
+{
+  "blocks": [
+    {
+      "_key": "ejonas",
+      "body": "Herrenschnitte, Bärte, kurze Schnitte jeder Art. Ich habe in Hamburg gelernt und in Zürich gelandet, weil hier die Leute früh aufstehen und pünktlich kommen.\n\nEin guter Herrenhaarschnitt ist in fünfundvierzig Minuten gemacht, und die Hälfte davon ist Zuhören. Sagen Sie mir, was beim letzten Mal nicht gestimmt hat; das ist der beste Anfang.",
+      "cover": "jonas",
+      "does": [
+        {
+          "service": "mens-cut"
+        },
+        {
+          "service": "beard"
+        },
+        {
+          "service": "childrens-cut"
+        }
+      ],
+      "hours": [],
+      "title": "Jonas Brunner",
+      "type": "master",
+      "v": 1
+    }
+  ],
+  "collection": "masters",
+  "locale": "de",
+  "path": "/de/masters/jonas",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

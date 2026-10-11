@@ -1,0 +1,95 @@
+{
+  "blocks": [
+    {
+      "_key": "hero0001",
+      "cta_href": "#services",
+      "cta_label": "Termin buchen",
+      "eyebrow": "Zürich · Kreis 5",
+      "image": "hero-room",
+      "image_alt": "Der Salon: drei schwarze Stühle unter runden Spiegeln an einer dunklen Wand, ein Marmorboden",
+      "lead": "Drei Stühle an der Josefstrasse. Online einen Termin buchen, vorbeikommen und so hinausgehen, wie Sie selbst sind — nur etwas besser frisiert.",
+      "title": "Ein guter Haarschnitt, ohne Getue",
+      "type": "hero",
+      "v": 1
+    },
+    {
+      "_key": "pled0001",
+      "items": [
+        {
+          "text": "Im Viertelstundentakt gebucht und pünktlich begonnen. Wenn wir im Verzug sind, hören Sie es von uns, bevor Sie aus dem Haus gehen.",
+          "title": "Pünktlich"
+        },
+        {
+          "text": "Keine Produkte über den Tresen geschoben, keine Behandlung, für die Sie nicht gekommen sind. Der Preis auf der Liste ist der Preis.",
+          "title": "Nichts, was Sie nicht wollten"
+        },
+        {
+          "text": "Fünfzehn Minuten auf dem Stuhl, ohne Schere, um darüber zu reden, was Ihr Haar macht und was es machen soll.",
+          "title": "Der erste Blick ist gratis"
+        }
+      ],
+      "title": "Drei Dinge, an die wir uns halten",
+      "type": "pledges",
+      "v": 1
+    },
+    {
+      "_key": "text0001",
+      "body": "Atelier Nord hat 2019 in einer ehemaligen Druckerei an der Josefstrasse eröffnet: drei Stühle, hohe Fenster und ein Boden, den wir behalten haben. Wir schneiden, färben und föhnen — nicht mehr, und davon nichts halb.\n\nWas vom Stuhl geht, soll zu der Person passen, die darauf sass: ein Schnitt, der am Dienstagmorgen noch stimmt, eine Farbe, die aussieht, als wäre sie so gewachsen.",
+      "type": "text",
+      "v": 1
+    },
+    {
+      "_key": "team0001",
+      "eyebrow": "Bei wem Sie sitzen werden",
+      "lead": "Buchen Sie, bei wem Sie möchten, oder lassen Sie den Kalender entscheiden. Jede und jeder macht, was auf der eigenen Karte steht — und nichts anderes.",
+      "title": "Drei Stühle, drei Paar Hände",
+      "type": "team",
+      "v": 1
+    },
+    {
+      "_key": "ctab0001",
+      "contact_label": "Telefon oder E-Mail",
+      "cta_href": "#contact",
+      "cta_label": "Fragen",
+      "form": true,
+      "lead": "Schreiben Sie uns: was Ihr Haar macht, was es machen soll. Wir antworten noch am selben Tag, Montag bis Samstag.",
+      "message_label": "Worum es geht",
+      "name_label": "Ihr Name",
+      "required_note": "Wir antworten innerhalb eines Tages. Nichts ist gebucht, bis Sie bestätigen.",
+      "title": "Nicht sicher, was Sie brauchen?",
+      "type": "cta_banner",
+      "v": 1
+    },
+    {
+      "_key": "ques0001",
+      "items": [
+        {
+          "answer": "Online zu buchen ist der sichere Weg; nach dem Mittag ist ein freier Stuhl selten. Wenn Sie vorbeigehen, kommen Sie herein und fragen Sie — ist ein Stuhl frei, sind Sie willkommen.",
+          "question": "Muss ich buchen, oder kann ich einfach vorbeikommen?"
+        },
+        {
+          "answer": "Im Salon, mit Karte oder TWINT, nach dem Termin. Online wird nichts bezahlt, und das Buchen kostet nichts.",
+          "question": "Wie bezahle ich?"
+        },
+        {
+          "answer": "Über den Link in Ihrer Bestätigung bis drei Stunden vorher. Später schicken Sie uns eine Nachricht; wir wissen, dass das Leben dazwischenkommt, und bitten nur darum, dass es nicht jedes Mal dazwischenkommt.",
+          "question": "Was, wenn ich absagen muss?"
+        },
+        {
+          "answer": "Ja, unter zwölf zum Kinderpreis. Elif und Jonas sind die Geduldigen; buchen Sie die beiden für den ersten Haarschnitt.",
+          "question": "Schneiden Sie auch Kinderhaare?"
+        }
+      ],
+      "title": "Was uns oft gefragt wird",
+      "type": "questions",
+      "v": 1
+    }
+  ],
+  "locale": "de",
+  "path": "/de",
+  "schema_version": 1,
+  "seo": {
+    "description": "Ein Coiffeursalon mit drei Stühlen an der Josefstrasse, Zürich. Schneiden, Färben und Föhnen, online gebucht. Montag bis Samstag geöffnet.",
+    "title": "Atelier Nord — Coiffeur in Zürich"
+  }
+}

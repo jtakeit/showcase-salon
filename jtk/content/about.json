@@ -1,0 +1,52 @@
+{
+  "blocks": [
+    {
+      "_key": "stor0001",
+      "body": "The building on Josefstrasse printed labels for eighty years. When the last press left, the room was bare: a long wall, a marble floor nobody had seen in decades, and windows that run from the counter to the ceiling. We painted the wall dark, hung three round mirrors, and that was the salon.\n\nIt stayed three chairs on purpose. A room with eight is a room where nobody knows your name by the second visit, and a cut that looks right three weeks later needs somebody who remembers what your hair did last time.",
+      "eyebrow": "Since 2019",
+      "image": "room-arches",
+      "image_alt": "The salon before opening: arched mirrors lit from behind, two chairs, a wooden floor",
+      "lead": "We took the room for the light and kept the floor. Everything else we built around three chairs.",
+      "title": "A print shop with tall windows",
+      "type": "story",
+      "v": 1
+    },
+    {
+      "_key": "stor0002",
+      "body": "We book by the quarter hour and start on time, and the first ten minutes are always at the basin — a wash and a head massage, because nobody can talk about their hair while it is dry and flat. Then the cut, then a blow-dry that shows you how it will fall at home, with your own brush, not ours.\n\nColour is mixed to your hair, not to a chart, and we would rather send you home with less than you asked for than more than you wanted. If it is your first time with us, come for the free consultation: fifteen minutes, no scissors, nothing decided until you say so.",
+      "eyebrow": "How we work",
+      "image": "wash",
+      "image_alt": "A client's hair being rinsed at the basin",
+      "lead": "The wash is where the appointment actually starts.",
+      "title": "Slowly at the basin, quickly after",
+      "type": "story",
+      "v": 1
+    },
+    {
+      "_key": "ques0001",
+      "items": [
+        {
+          "answer": "Yes. There is a ramp at the door, the floor is level throughout, and the basins are at wheelchair height. Tell us when you book and we will keep the chair nearest the door.",
+          "question": "Is the salon accessible?"
+        },
+        {
+          "answer": "A few, on the shelf by the counter, and only the ones we would use at home. Nobody will bring one to your chair.",
+          "question": "Do you sell the products you use?"
+        },
+        {
+          "answer": "Please do. A photograph says in a second what takes ten minutes in words — and then we will tell you honestly what your hair will and will not do.",
+          "question": "Can I bring a photograph of what I want?"
+        }
+      ],
+      "title": "Good to know",
+      "type": "questions",
+      "v": 1
+    }
+  ],
+  "path": "/about",
+  "schema_version": 1,
+  "seo": {
+    "description": "How Atelier Nord came to be: a former print shop on Josefstrasse, three chairs, and the way we work.",
+    "title": "About the salon"
+  }
+}

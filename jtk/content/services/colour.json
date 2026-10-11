@@ -1,0 +1,20 @@
+{
+  "blocks": [
+    {
+      "_key": "ecolour",
+      "costs": 18000,
+      "takes": 120,
+      "title": "Full colour",
+      "type": "service",
+      "v": 1
+    }
+  ],
+  "collection": "services",
+  "path": "/services/colour",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

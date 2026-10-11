@@ -1,0 +1,64 @@
+{
+  "blocks": [
+    {
+      "_key": "enoa",
+      "body": "I opened the salon because I wanted a room where a haircut is a conversation, not a transaction. Fifteen years in, I still start every appointment at the basin and still ask the same question: what does your hair do on an ordinary Tuesday?\n\nColour is my thing. I mix to the hair in front of me rather than to a swatch, and I would rather send you home a shade lighter than you asked for than a shade you will regret. Bring a photograph, bring doubts — both are useful.\n\nI work Tuesday to Saturday; Monday is for the garden.",
+      "cover": "noa",
+      "does": [
+        {
+          "service": "womens-cut"
+        },
+        {
+          "service": "colour"
+        },
+        {
+          "service": "highlights"
+        },
+        {
+          "service": "blow-dry"
+        },
+        {
+          "service": "keratin"
+        }
+      ],
+      "hours": [
+        {
+          "closes": 1080,
+          "day": "tuesday",
+          "opens": 540
+        },
+        {
+          "closes": 1080,
+          "day": "wednesday",
+          "opens": 540
+        },
+        {
+          "closes": 1080,
+          "day": "thursday",
+          "opens": 540
+        },
+        {
+          "closes": 1080,
+          "day": "friday",
+          "opens": 540
+        },
+        {
+          "closes": 900,
+          "day": "saturday",
+          "opens": 540
+        }
+      ],
+      "title": "Noa Keller",
+      "type": "master",
+      "v": 1
+    }
+  ],
+  "collection": "masters",
+  "path": "/masters/noa",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

@@ -1,0 +1,19 @@
+{
+  "blocks": [
+    {
+      "_key": "intro1",
+      "eyebrow": "Journal",
+      "lead": "Kurze Beiträge zu Haar, Farbe und dem Salon — was wir über das Waschbecken hinweg sagen würden, wenn die Zeit reichte.",
+      "title": "Notizen vom Stuhl",
+      "type": "intro",
+      "v": 1
+    }
+  ],
+  "locale": "de",
+  "path": "/de/blog",
+  "schema_version": 1,
+  "seo": {
+    "description": "Kurze Beiträge von Atelier Nord zu Haar, Farbe und dem Salon.",
+    "title": "Journal"
+  }
+}

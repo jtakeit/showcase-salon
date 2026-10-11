@@ -1,0 +1,22 @@
+{
+  "blocks": [
+    {
+      "_key": "psaturd",
+      "body": "On a Saturday the street is empty until ten, the bakery on the corner has just opened, and the first clients come in with coffee and nothing to do afterwards.\n\nIt is the hour we would keep if we could keep only one. Nobody is late, because nobody has been anywhere yet. The light comes across the floor instead of down on it.\n\nIf you can, book nine or nine fifteen on a Saturday. We close at three, so the afternoon is short and the morning is long, and that is the right way round.",
+      "cover": "room-arches",
+      "date": "2026-08-30",
+      "excerpt": "The salon opens at nine on Saturdays and the first hour is the best one. A short piece about why.",
+      "title": "Saturday mornings at Josefstrasse",
+      "type": "post",
+      "v": 1
+    }
+  ],
+  "collection": "blog",
+  "path": "/blog/saturday-mornings",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

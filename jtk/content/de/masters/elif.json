@@ -1,0 +1,36 @@
+{
+  "blocks": [
+    {
+      "_key": "eelif",
+      "body": "Langes Haar, Kinder und die Art von Farbe, die aussieht, als wäre sie so gewachsen — das ist mein Stuhl. Ich schneide langsam und rede dabei wenig, was die meisten nach einer Weile als Erholung empfinden.\n\nFür den ersten Haarschnitt eines Kindes nehme ich mir die doppelte Zeit und habe immer einen Spiegel auf Kinderhöhe. Tränen sind erlaubt; wir hören einfach kurz auf.",
+      "cover": "elif",
+      "does": [
+        {
+          "service": "womens-cut"
+        },
+        {
+          "service": "childrens-cut"
+        },
+        {
+          "service": "colour"
+        },
+        {
+          "service": "blow-dry"
+        }
+      ],
+      "hours": [],
+      "title": "Elif Demir",
+      "type": "master",
+      "v": 1
+    }
+  ],
+  "collection": "masters",
+  "locale": "de",
+  "path": "/de/masters/elif",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

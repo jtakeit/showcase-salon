@@ -1,0 +1,21 @@
+{
+  "blocks": [
+    {
+      "_key": "ehighlig",
+      "costs": 22000,
+      "takes": 150,
+      "title": "Strähnen \u0026 Balayage",
+      "type": "service",
+      "v": 1
+    }
+  ],
+  "collection": "services",
+  "locale": "de",
+  "path": "/de/services/highlights",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

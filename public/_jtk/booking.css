@@ -1,0 +1,229 @@
+/*
+ * The visitor's booking page, in the salon's clothes.
+ *
+ * The platform serves `/_booking/<token>` on every site — the booking,
+ * add to calendar, move, cancel — as a plain page, and that page wears
+ * the stylesheet at `/_jtk/booking.css` when the site has one. This is
+ * ours: the same paper, ink and type as the rest of the site. The page's
+ * markup is the platform's (ids, not classes, for the most part) and may
+ * grow; everything here is additive, so a line it does not know is a
+ * line it ignores.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&display=swap');
+
+:root {
+  color-scheme: light;
+  --paper: #f5f0e8;
+  --panel: #fbf8f3;
+  --ink: #141311;
+  --ink-2: #3a3733;
+  --ink-quiet: #7a746b;
+  --line: #e3dcd0;
+  --line-2: #c9c0b2;
+  --accent: #b5673b;
+  --display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+}
+
+html {
+  background: var(--paper);
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: grid;
+  place-items: start center;
+  padding: clamp(1.5rem, 5vw, 4rem) 1rem;
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.55 -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+main {
+  width: min(100%, 30rem);
+  box-sizing: border-box;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  background: var(--panel);
+  border-radius: 1.5rem;
+  box-shadow: 0 1px 2px rgb(20 19 17 / 0.04), 0 18px 48px -24px rgb(20 19 17 / 0.25);
+}
+h1 {
+  margin: 0 0 0.25rem;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(2rem, 1.4rem + 2vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.site {
+  margin: 0 0 1.25rem;
+  color: var(--ink-quiet);
+  opacity: 1;
+}
+.state {
+  display: inline-block;
+  margin: 0 0 1.25rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--ink);
+}
+dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.55rem 1.25rem;
+  margin: 0 0 1.25rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+dt {
+  opacity: 1;
+  color: var(--ink-quiet);
+  font-size: 0.9375rem;
+}
+dd {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.125rem;
+  line-height: 1.35;
+}
+.quiet {
+  margin: 0;
+  opacity: 1;
+  color: var(--ink-quiet);
+  font-size: 0.9375rem;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+button,
+a.btn {
+  font: inherit;
+  font-size: 0.9375rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+button:hover,
+a.btn:hover {
+  border-color: var(--ink);
+}
+button.primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+  border-color: var(--line);
+}
+#cancel {
+  color: var(--ink-quiet);
+}
+#cancel:hover {
+  color: var(--ink);
+}
+#mover {
+  margin-top: 1.25rem;
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  background: var(--paper);
+}
+#l-pick {
+  margin: 0 0 0.6rem;
+  font-size: 0.9375rem;
+  color: var(--ink-quiet);
+}
+input[type='date'] {
+  font: inherit;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+}
+.month {
+  margin: 0.9rem 0 0.4rem;
+  font-family: var(--display);
+  font-size: 1.125rem;
+  opacity: 1;
+}
+.days {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.days-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 0;
+}
+.days-row button {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.4rem 0.1rem 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: var(--panel);
+  text-align: center;
+  line-height: 1.2;
+}
+.days-row small {
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-quiet);
+  opacity: 1;
+}
+.days-row span {
+  font-family: var(--display);
+  font-size: 1.125rem;
+}
+.days-row button.is-chosen,
+.days-row button.is-chosen:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.days-row button.is-chosen small {
+  color: var(--accent);
+}
+.days-row button:disabled {
+  opacity: 0.35;
+}
+.days-arrow {
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.7rem;
+}
+.slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+.slots button {
+  padding: 0.5rem 0.4rem;
+  border-radius: 0.6rem;
+  border-color: var(--line);
+  background: var(--panel);
+}
+.slots button:hover {
+  border-color: var(--ink);
+}
+.err {
+  margin-top: 0.75rem;
+  color: #a33a2a;
+}

@@ -1,0 +1,29 @@
+{
+  "v": 2,
+  "field": "veil",
+  "scrim": true,
+  "ground": "#141311",
+  "colors": [
+    "#b5673b",
+    "#e9c9ad",
+    "#3a2a22",
+    "#141311"
+  ],
+  "paper": "#f5f0e8",
+  "ink": "#141311",
+  "accent": "#b5673b",
+  "surface": {
+    "pattern": "grain",
+    "scope": "page",
+    "size": "",
+    "weight": "",
+    "opacity": 0.05,
+    "draw": false,
+    "edge": "hairline",
+    "reveal": "settle"
+  },
+  "photos": {
+    "treatment": "grade",
+    "amount": 0.5
+  }
+}

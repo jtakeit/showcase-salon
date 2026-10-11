@@ -1,0 +1,49 @@
+{
+  "blocks": [
+    {
+      "_key": "visi0001",
+      "body": "Vom Bahnhof Hardbrücke die Geroldstrasse hinunter und bei der Bäckerei links: Der Salon ist die dunkle Front mit den drei runden Spiegeln im Fenster. Mit dem Tram bis Escher-Wyss-Platz, dann vier Minuten zu Fuss.\n\nParkplätze gibt es im Parkhaus Hardbrücke; direkt vor der Tür ist blaue Zone, eine Stunde mit Parkscheibe.",
+      "lead": "Sechs Minuten zu Fuss vom Bahnhof, auf der ruhigen Strassenseite.",
+      "title": "Josefstrasse, beim Hardbrücke",
+      "type": "visit",
+      "v": 1
+    },
+    {
+      "_key": "ctab0001",
+      "contact_label": "Telefon oder E-Mail",
+      "cta_href": "#contact",
+      "cta_label": "Senden",
+      "form": true,
+      "lead": "Eine Frage, ein Foto von dem, was Ihnen vorschwebt, oder ein Tag, der noch nicht im Kalender steht. Wir antworten innerhalb eines Tages.",
+      "message_label": "Worum es geht",
+      "name_label": "Ihr Name",
+      "required_note": "Nichts ist gebucht, bis Sie bestätigen. Für einen Termin buchen Sie online — das geht schneller als schreiben.",
+      "title": "Schreiben Sie uns",
+      "type": "cta_banner",
+      "v": 1
+    },
+    {
+      "_key": "ques0001",
+      "items": [
+        {
+          "answer": "Nein. Jeder Termin beginnt am Waschbecken; kommen Sie, wie Sie sind.",
+          "question": "Soll ich mit gewaschenen Haaren kommen?"
+        },
+        {
+          "answer": "Ein Kind ja, und es gibt eine Ecke mit Farbstiften. Einen Hund, wenn er von der Sorte ist, die unter einem Stuhl schläft.",
+          "question": "Darf ich ein Kind oder einen Hund mitbringen?"
+        }
+      ],
+      "title": "Bevor Sie kommen",
+      "type": "questions",
+      "v": 1
+    }
+  ],
+  "locale": "de",
+  "path": "/de/contact",
+  "schema_version": 1,
+  "seo": {
+    "description": "Atelier Nord, Josefstrasse, 8005 Zürich. Montag bis Freitag 9–18 Uhr, Samstag 9–15 Uhr. Schreiben Sie uns oder buchen Sie online.",
+    "title": "Kontakt und Öffnungszeiten"
+  }
+}

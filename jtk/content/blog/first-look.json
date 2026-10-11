@@ -1,0 +1,22 @@
+{
+  "blocks": [
+    {
+      "_key": "pfirst-",
+      "body": "Every new client gets fifteen minutes before anything is cut: you sit, we look, we talk. No scissors on the counter, nobody mixing colour in the back.\n\nIt started as a way to avoid the thing every hairdresser dreads — the client who says «just a trim» and means something they saw on somebody else. Twenty minutes of talking about what your hair does on an ordinary Tuesday saves an hour of fixing it on the Saturday after.\n\n## What we ask\n\nHow you wash it. How long it takes you in the morning. What you liked about the last cut, and what you stopped liking after a week. Whether you want to be able to do nothing to it, or whether you like doing something to it.\n\n## What we do not do\n\nWe do not book the appointment for you while you are sitting there. You go home, you think, you book online when you want to. Most people book the same evening; a few never come back, and that is the point of the fifteen minutes.",
+      "cover": "tools",
+      "date": "2026-09-08",
+      "excerpt": "Fifteen minutes in the chair, no scissors. Most people think it is a sales pitch. It is the opposite.",
+      "title": "The free first look, and why we keep it",
+      "type": "post",
+      "v": 1
+    }
+  ],
+  "collection": "blog",
+  "path": "/blog/first-look",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

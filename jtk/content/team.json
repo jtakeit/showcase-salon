@@ -1,0 +1,18 @@
+{
+  "blocks": [
+    {
+      "_key": "team0001",
+      "eyebrow": "Who you will sit with",
+      "lead": "Book with whoever you like, or let the diary choose. Each of them does what is on their card, and nothing they would not be sure of. Noa keeps her own days; Elif and Jonas follow the salon's hours.",
+      "title": "Three chairs, three hands",
+      "type": "team",
+      "v": 1
+    }
+  ],
+  "path": "/team",
+  "schema_version": 1,
+  "seo": {
+    "description": "Noa, Elif and Jonas: what each one does, and when they work.",
+    "title": "The team"
+  }
+}

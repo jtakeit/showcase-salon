@@ -1,0 +1,19 @@
+{
+  "blocks": [
+    {
+      "_key": "team0001",
+      "eyebrow": "Bei wem Sie sitzen werden",
+      "lead": "Buchen Sie, bei wem Sie möchten, oder lassen Sie den Kalender entscheiden. Jede und jeder macht, was auf der eigenen Karte steht — und nichts anderes.",
+      "title": "Drei Stühle, drei Paar Hände",
+      "type": "team",
+      "v": 1
+    }
+  ],
+  "locale": "de",
+  "path": "/de/team",
+  "schema_version": 1,
+  "seo": {
+    "description": "Noa, Elif und Jonas: was jede und jeder macht, und wann sie arbeiten.",
+    "title": "Das Team"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "blocks": [
+    {
+      "_key": "ebeard",
+      "costs": 3000,
+      "takes": 20,
+      "title": "Beard trim",
+      "type": "service",
+      "v": 1
+    }
+  ],
+  "collection": "services",
+  "path": "/services/beard",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

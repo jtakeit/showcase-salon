@@ -1,0 +1,900 @@
+{
+  "contract": 2,
+  "generator": "@jtakeit/kit@0.5.0",
+  "blocks": [
+    {
+      "type": "text",
+      "v": 1,
+      "label": "Text",
+      "fields": [
+        {
+          "key": "body",
+          "label": "Text",
+          "kind": "markdown",
+          "max": 40000,
+          "client_editable": true
+        }
+      ]
+    },
+    {
+      "type": "hero",
+      "v": 1,
+      "label": "Opening screen",
+      "fields": [
+        {
+          "key": "eyebrow",
+          "label": "Line above the heading",
+          "kind": "text",
+          "max": 60,
+          "client_editable": true
+        },
+        {
+          "key": "title",
+          "label": "Heading",
+          "kind": "text",
+          "required": true,
+          "max": 80,
+          "client_editable": true,
+          "seo_sensitive": true
+        },
+        {
+          "key": "lead",
+          "label": "Subheading",
+          "kind": "textarea",
+          "max": 240,
+          "client_editable": true,
+          "seo_sensitive": true
+        },
+        {
+          "key": "cta_label",
+          "label": "Button text",
+          "kind": "text",
+          "max": 40,
+          "client_editable": true
+        },
+        {
+          "key": "cta_href",
+          "label": "Button link",
+          "kind": "url",
+          "no_tap_target": true
+        },
+        {
+          "key": "image",
+          "label": "Photograph",
+          "kind": "media",
+          "client_editable": true
+        },
+        {
+          "key": "image_alt",
+          "label": "Photograph description",
+          "kind": "text",
+          "max": 120,
+          "client_editable": true,
+          "seo_sensitive": true,
+          "no_tap_target": true
+        }
+      ]
+    },
+    {
+      "type": "cta_banner",
+      "v": 1,
+      "label": "Call to action and form",
+      "collects": "enquiry",
+      "asks": [
+        {
+          "key": "topic",
+          "label": "What it is about",
+          "kind": "text",
+          "max": 120
+        }
+      ],
+      "fields": [
+        {
+          "key": "title",
+          "label": "Heading",
+          "kind": "text",
+          "required": true,
+          "max": 80,
+          "client_editable": true
+        },
+        {
+          "key": "lead",
+          "label": "Subheading",
+          "kind": "textarea",
+          "max": 240,
+          "client_editable": true
+        },
+        {
+          "key": "cta_label",
+          "label": "Button text",
+          "kind": "text",
+          "max": 40,
+          "client_editable": true
+        },
+        {
+          "key": "cta_href",
+          "label": "Button link",
+          "kind": "url",
+          "no_tap_target": true
+        },
+        {
+          "key": "form",
+          "label": "Show the form",
+          "kind": "bool",
+          "no_tap_target": true
+        },
+        {
+          "key": "name_label",
+          "label": "Label for the “name” field",
+          "kind": "text",
+          "max": 60,
+          "client_editable": true
+        },
+        {
+          "key": "contact_label",
+          "label": "Label for the “how to reach you” field",
+          "kind": "text",
+          "max": 90,
+          "client_editable": true
+        },
+        {
+          "key": "message_label",
+          "label": "Label for the “message” field",
+          "kind": "text",
+          "max": 120,
+          "client_editable": true
+        },
+        {
+          "key": "required_note",
+          "label": "Line under the form",
+          "kind": "text",
+          "max": 140,
+          "client_editable": true
+        }
+      ]
+    },
+    {
+      "type": "pledges",
+      "v": 1,
+      "label": "Three promises",
+      "fields": [
+        {
+          "key": "title",
+          "label": "Heading",
+          "kind": "text",
+          "max": 80,
+          "client_editable": true
+        },
+        {
+          "key": "items",
+          "label": "Promises",
+          "kind": "list",
+          "max": 4,
+          "of": [
+            {
+              "key": "title",
+              "label": "Promise",
+              "kind": "text",
+              "required": true,
+              "max": 60,
+              "client_editable": true
+            },
+            {
+              "key": "text",
+              "label": "In a sentence",
+              "kind": "textarea",
+              "required": true,
+              "max": 240,
+              "client_editable": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "story",
+      "v": 1,
+      "label": "A chapter",
+      "fields": [
+        {
+          "key": "eyebrow",
+          "label": "Line above the heading",
+          "kind": "text",
+          "max": 60,
+          "client_editable": true
+        },
+        {
+          "key": "title",
+          "label": "Heading",
+          "kind": "text",
+          "required": true,
+          "max": 80,
+          "client_editable": true,
+          "seo_sensitive": true
+        },
+        {
+          "key": "lead",
+          "label": "Subheading",
+          "kind": "textarea",
+          "max": 240,
+          "client_editable": true
+        },
+        {
+          "key": "body",
+          "label": "Text",
+          "kind": "markdown",
+          "max": 6000,
+          "client_editable": true
+        },
+        {
+          "key": "image",
+          "label": "Photograph",
+          "kind": "media",
+          "client_editable": true
+        },
+        {
+          "key": "image_alt",
+          "label": "Photograph description",
+          "kind": "text",
+          "max": 120,
+          "client_editable": true,
+          "seo_sensitive": true,
+          "no_tap_target": true
+        }
+      ]
+    },
+    {
+      "type": "team",
+      "v": 1,
+      "label": "The team",
+      "fields": [
+        {
+          "key": "eyebrow",
+          "label": "Line above the heading",
+          "kind": "text",
+          "max": 60,
+          "client_editable": true
+        },
+        {
+          "key": "title",
+          "label": "Heading",
+          "kind": "text",
+          "required": true,
+          "max": 80,
+          "client_editable": true
+        },
+        {
+          "key": "lead",
+          "label": "Subheading",
+          "kind": "textarea",
+          "max": 300,
+          "client_editable": true
+        }
+      ]
+    },
+    {
+      "type": "visit",
+      "v": 1,
+      "label": "Finding us",
+      "fields": [
+        {
+          "key": "title",
+          "label": "Heading",
+          "kind": "text",
+          "required": true,
+          "max": 80,
+          "client_editable": true
+        },
+        {
+          "key": "lead",
+          "label": "Subheading",
+          "kind": "textarea",
+          "max": 240,
+          "client_editable": true
+        },
+        {
+          "key": "body",
+          "label": "Text",
+          "kind": "markdown",
+          "max": 4000,
+          "client_editable": true
+        }
+      ]
+    },
+    {
+      "type": "questions",
+      "v": 1,
+      "label": "Questions and answers",
+      "hint": "Each answer has to read on its own, away from the page.",
+      "fields": [
+        {
+          "key": "title",
+          "label": "Heading",
+          "kind": "text",
+          "max": 80,
+          "client_editable": true
+        },
+        {
+          "key": "items",
+          "label": "Questions",
+          "kind": "list",
+          "max": 12,
+          "of": [
+            {
+              "key": "question",
+              "label": "Question",
+              "kind": "text",
+              "required": true,
+              "max": 140,
+              "client_editable": true,
+              "seo_sensitive": true
+            },
+            {
+              "key": "answer",
+              "label": "Answer",
+              "kind": "textarea",
+              "required": true,
+              "max": 600,
+              "client_editable": true,
+              "seo_sensitive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "service",
+      "v": 1,
+      "label": {
+        "uk": "Послуга",
+        "en": "Service",
+        "de": "Leistung",
+        "ru": "Услуга",
+        "es": "Servicio",
+        "it": "Servizio",
+        "pt": "Serviço",
+        "fr": "Prestation"
+      },
+      "fields": [
+        {
+          "key": "title",
+          "label": {
+            "uk": "Назва",
+            "en": "Name",
+            "de": "Name",
+            "ru": "Название",
+            "es": "Nombre",
+            "it": "Nome",
+            "pt": "Nome",
+            "fr": "Nom"
+          },
+          "kind": "text",
+          "required": true,
+          "max": 80,
+          "client_editable": true
+        },
+        {
+          "key": "takes",
+          "label": {
+            "uk": "Триває",
+            "en": "Takes",
+            "de": "Dauer",
+            "ru": "Длится",
+            "es": "Duración",
+            "it": "Durata",
+            "pt": "Duração",
+            "fr": "Durée"
+          },
+          "kind": "duration",
+          "required": true,
+          "min": 5,
+          "max": 480,
+          "client_editable": true
+        },
+        {
+          "key": "costs",
+          "label": {
+            "uk": "Ціна",
+            "en": "Price",
+            "de": "Preis",
+            "ru": "Цена",
+            "es": "Precio",
+            "it": "Prezzo",
+            "pt": "Preço",
+            "fr": "Prix"
+          },
+          "kind": "money",
+          "client_editable": true
+        }
+      ]
+    },
+    {
+      "type": "master",
+      "v": 1,
+      "label": {
+        "uk": "Майстер",
+        "en": "Master",
+        "de": "Teammitglied",
+        "ru": "Мастер",
+        "es": "Profesional",
+        "it": "Professionista",
+        "pt": "Profissional",
+        "fr": "Professionnel"
+      },
+      "fields": [
+        {
+          "key": "title",
+          "label": {
+            "uk": "Ім’я",
+            "en": "Name",
+            "de": "Name",
+            "ru": "Название",
+            "es": "Nombre",
+            "it": "Nome",
+            "pt": "Nome",
+            "fr": "Nom"
+          },
+          "kind": "text",
+          "required": true,
+          "max": 80,
+          "client_editable": true
+        },
+        {
+          "key": "body",
+          "label": {
+            "uk": "Про себе",
+            "en": "About me",
+            "de": "Über mich"
+          },
+          "kind": "markdown",
+          "max": 4000,
+          "client_editable": true
+        },
+        {
+          "key": "cover",
+          "label": {
+            "uk": "Фото",
+            "en": "Photo",
+            "de": "Foto"
+          },
+          "kind": "media",
+          "accept": "image",
+          "client_editable": true
+        },
+        {
+          "key": "hours",
+          "label": {
+            "uk": "Власні години",
+            "en": "Own hours",
+            "de": "Eigene Zeiten",
+            "ru": "Свои часы",
+            "es": "Horario propio",
+            "it": "Orari propri",
+            "pt": "Horário próprio",
+            "fr": "Horaires propres"
+          },
+          "kind": "list",
+          "max": 21,
+          "client_editable": true,
+          "of": [
+            {
+              "key": "day",
+              "label": {
+                "uk": "День",
+                "en": "Day",
+                "de": "Tag",
+                "ru": "Сутки",
+                "es": "Día",
+                "it": "Giorno",
+                "pt": "Dia",
+                "fr": "Jour"
+              },
+              "kind": "select",
+              "options": [
+                "monday",
+                "tuesday",
+                "wednesday",
+                "thursday",
+                "friday",
+                "saturday",
+                "sunday"
+              ],
+              "required": true,
+              "client_editable": true,
+              "no_tap_target": true
+            },
+            {
+              "key": "opens",
+              "label": {
+                "uk": "Відкриття",
+                "en": "Opens",
+                "de": "Öffnet",
+                "ru": "Открытие",
+                "es": "Abre",
+                "it": "Apre",
+                "pt": "Abre",
+                "fr": "Ouverture"
+              },
+              "kind": "time_of_day",
+              "required": true,
+              "client_editable": true,
+              "no_tap_target": true
+            },
+            {
+              "key": "closes",
+              "label": {
+                "uk": "Закриття",
+                "en": "Closes",
+                "de": "Schliesst",
+                "ru": "Закрытие",
+                "es": "Cierra",
+                "it": "Chiude",
+                "pt": "Fecha",
+                "fr": "Fermeture"
+              },
+              "kind": "time_of_day",
+              "required": true,
+              "client_editable": true,
+              "no_tap_target": true
+            }
+          ]
+        },
+        {
+          "key": "does",
+          "label": {
+            "uk": "Що робить",
+            "en": "Does",
+            "de": "Macht",
+            "ru": "Что делает",
+            "es": "Realiza",
+            "it": "Esegue",
+            "pt": "Faz",
+            "fr": "Prestations assurées"
+          },
+          "kind": "list",
+          "max": 40,
+          "client_editable": true,
+          "of": [
+            {
+              "key": "service",
+              "label": {
+                "uk": "Послуга",
+                "en": "Service",
+                "de": "Leistung",
+                "ru": "Услуга",
+                "es": "Servicio",
+                "it": "Servizio",
+                "pt": "Serviço",
+                "fr": "Prestation"
+              },
+              "kind": "ref",
+              "ref": "services",
+              "required": true,
+              "client_editable": true,
+              "no_tap_target": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "post",
+      "v": 1,
+      "label": {
+        "uk": "Допис",
+        "en": "Post",
+        "de": "Beitrag",
+        "ru": "Запись",
+        "es": "Entrada",
+        "it": "Articolo",
+        "pt": "Artigo",
+        "fr": "Article"
+      },
+      "fields": [
+        {
+          "key": "title",
+          "label": {
+            "uk": "Заголовок",
+            "en": "Title",
+            "de": "Titel",
+            "ru": "Заголовок",
+            "es": "Título",
+            "it": "Titolo",
+            "pt": "Título",
+            "fr": "Titre"
+          },
+          "kind": "text",
+          "required": true,
+          "max": 90,
+          "client_editable": true,
+          "seo_sensitive": true
+        },
+        {
+          "key": "date",
+          "label": {
+            "uk": "Дата",
+            "en": "Date",
+            "de": "Datum",
+            "ru": "Дата",
+            "es": "Fecha",
+            "it": "Data",
+            "pt": "Data",
+            "fr": "Date"
+          },
+          "kind": "date",
+          "required": true,
+          "client_editable": true,
+          "no_tap_target": true
+        },
+        {
+          "key": "excerpt",
+          "label": {
+            "uk": "Анонс",
+            "en": "Excerpt",
+            "de": "Anriss",
+            "ru": "Анонс",
+            "es": "Extracto",
+            "it": "Estratto",
+            "pt": "Resumo",
+            "fr": "Chapeau"
+          },
+          "kind": "textarea",
+          "max": 200,
+          "client_editable": true,
+          "no_tap_target": true
+        },
+        {
+          "key": "cover",
+          "label": {
+            "uk": "Обкладинка",
+            "en": "Cover",
+            "de": "Titelbild",
+            "ru": "Обложка",
+            "es": "Portada",
+            "it": "Copertina",
+            "pt": "Capa",
+            "fr": "Couverture"
+          },
+          "kind": "media",
+          "client_editable": true
+        },
+        {
+          "key": "body",
+          "label": {
+            "uk": "Текст допису",
+            "en": "Text",
+            "de": "Text",
+            "ru": "Текст записи",
+            "es": "Texto",
+            "it": "Testo",
+            "pt": "Texto",
+            "fr": "Texte"
+          },
+          "kind": "markdown",
+          "max": 40000,
+          "client_editable": true
+        }
+      ]
+    },
+    {
+      "type": "intro",
+      "v": 1,
+      "label": {
+        "uk": "Вступ сторінки",
+        "en": "Page intro",
+        "de": "Seiteneinleitung",
+        "ru": "Вступление страницы",
+        "es": "Introducción",
+        "it": "Introduzione",
+        "pt": "Introdução",
+        "fr": "Introduction"
+      },
+      "fields": [
+        {
+          "key": "eyebrow",
+          "label": {
+            "uk": "Надзаголовок",
+            "en": "Eyebrow",
+            "de": "Dachzeile",
+            "ru": "Надзаголовок",
+            "es": "Antetítulo",
+            "it": "Occhiello",
+            "pt": "Antetítulo",
+            "fr": "Surtitre"
+          },
+          "kind": "text",
+          "max": 60,
+          "client_editable": true
+        },
+        {
+          "key": "title",
+          "label": {
+            "uk": "Заголовок",
+            "en": "Title",
+            "de": "Titel",
+            "ru": "Заголовок",
+            "es": "Título",
+            "it": "Titolo",
+            "pt": "Título",
+            "fr": "Titre"
+          },
+          "kind": "text",
+          "required": true,
+          "max": 90,
+          "client_editable": true
+        },
+        {
+          "key": "lead",
+          "label": {
+            "uk": "Підзаголовок",
+            "en": "Lead",
+            "de": "Vorspann",
+            "ru": "Подзаголовок",
+            "es": "Entradilla",
+            "it": "Sommario",
+            "pt": "Lead",
+            "fr": "Chapeau"
+          },
+          "kind": "textarea",
+          "max": 300,
+          "client_editable": true
+        }
+      ]
+    }
+  ],
+  "page_seo": [
+    {
+      "key": "title",
+      "label": "Page title",
+      "kind": "text",
+      "required": true,
+      "max": 60,
+      "client_editable": true,
+      "seo_sensitive": true,
+      "no_tap_target": true
+    },
+    {
+      "key": "description",
+      "label": "Description for search results",
+      "kind": "textarea",
+      "max": 160,
+      "client_editable": true,
+      "seo_sensitive": true,
+      "no_tap_target": true
+    }
+  ],
+  "business_facts": [
+    {
+      "key": "name",
+      "label": "Name",
+      "kind": "text",
+      "max": 80,
+      "client_editable": true,
+      "no_tap_target": true
+    },
+    {
+      "key": "city",
+      "label": "City",
+      "kind": "text",
+      "max": 60,
+      "client_editable": true,
+      "no_tap_target": true
+    },
+    {
+      "key": "phone",
+      "label": "Phone",
+      "kind": "tel",
+      "client_editable": true,
+      "no_tap_target": true
+    },
+    {
+      "key": "email",
+      "label": "Email",
+      "kind": "email",
+      "client_editable": true,
+      "no_tap_target": true
+    }
+  ],
+  "collections": [
+    {
+      "name": "services",
+      "label": {
+        "uk": "Послуги",
+        "en": "Services",
+        "de": "Leistungen",
+        "ru": "Услуги",
+        "es": "Servicios",
+        "it": "Servizi",
+        "pt": "Serviços",
+        "fr": "Prestations"
+      },
+      "one": {
+        "uk": "послуга",
+        "en": "service",
+        "de": "Leistung",
+        "ru": "услуга",
+        "es": "servicio",
+        "it": "servizio",
+        "pt": "serviço",
+        "fr": "prestation"
+      },
+      "icon": "lucide:list",
+      "prefix": "/services",
+      "type": "service",
+      "pages": false
+    },
+    {
+      "name": "masters",
+      "label": {
+        "uk": "Майстри",
+        "en": "Masters",
+        "de": "Mitarbeitende",
+        "ru": "Мастера",
+        "es": "Profesionales",
+        "it": "Professionisti",
+        "pt": "Profissionais",
+        "fr": "Professionnels"
+      },
+      "one": {
+        "uk": "майстер",
+        "en": "master",
+        "de": "Teammitglied",
+        "ru": "мастер",
+        "es": "profesional",
+        "it": "professionista",
+        "pt": "profissional",
+        "fr": "professionnel"
+      },
+      "icon": "lucide:users",
+      "prefix": "/masters",
+      "type": "master",
+      "body": [
+        "text"
+      ]
+    },
+    {
+      "name": "blog",
+      "label": {
+        "uk": "Блог",
+        "en": "Journal",
+        "de": "Journal",
+        "ru": "Блог",
+        "es": "Diario",
+        "it": "Giornale",
+        "pt": "Jornal",
+        "fr": "Journal"
+      },
+      "one": {
+        "uk": "допис",
+        "en": "post",
+        "de": "Beitrag",
+        "ru": "запись",
+        "es": "entrada",
+        "it": "articolo",
+        "pt": "artigo",
+        "fr": "article"
+      },
+      "icon": "lucide:newspaper",
+      "prefix": "/blog",
+      "type": "post",
+      "order": {
+        "by": "date",
+        "desc": true
+      },
+      "per_page": 10,
+      "body": [
+        "text"
+      ]
+    }
+  ],
+  "modules": {
+    "bookings": {
+      "services": "services",
+      "resources": "masters"
+    }
+  },
+  "locale": "en",
+  "locales": [
+    "de"
+  ]
+}

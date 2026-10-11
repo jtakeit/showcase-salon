@@ -1,0 +1,53 @@
+{
+  "blocks": [
+    {
+      "_key": "stor0001",
+      "body": "Das Haus an der Josefstrasse hat achtzig Jahre lang Etiketten gedruckt. Als die letzte Presse hinausging, blieben die Fenster, die Decke und ein Boden voller Farbspuren, die wir nicht wegschleifen wollten.\n\nDrei Stühle, keine Trennwände, ein Waschplatz am Fenster: so ist der Salon seit dem ersten Tag, und so bleibt er. Wer hereinkommt, sieht alle drei, die hier arbeiten, und hört, worüber gerade geredet wird.",
+      "eyebrow": "Seit 2019",
+      "image": "room-arches",
+      "image_alt": "Der Salon vor der Eröffnung: von hinten beleuchtete Bogenspiegel, zwei Stühle, ein Holzboden",
+      "lead": "Wir haben den Raum wegen des Lichts genommen und den Boden behalten. Alles andere haben wir um drei Stühle herum gebaut.",
+      "title": "Eine Druckerei mit hohen Fenstern",
+      "type": "story",
+      "v": 1
+    },
+    {
+      "_key": "stor0002",
+      "body": "Wir buchen im Viertelstundentakt und beginnen pünktlich, und die ersten zehn Minuten sind immer am Waschbecken: Dort merkt man, was ein Haar tut, lange bevor eine Schere es berührt.\n\nDanach geht es zügig. Ein Schnitt, der eine Stunde braucht, braucht eine Stunde; einer, der zwanzig Minuten braucht, bekommt nicht vierzig, nur damit es sich nach mehr anfühlt.",
+      "eyebrow": "Wie wir arbeiten",
+      "image": "wash",
+      "image_alt": "Das Haar einer Kundin wird am Waschbecken ausgespült",
+      "lead": "Das Waschen ist der Moment, in dem der Termin wirklich beginnt.",
+      "title": "Langsam am Waschbecken, schnell danach",
+      "type": "story",
+      "v": 1
+    },
+    {
+      "_key": "ques0001",
+      "items": [
+        {
+          "answer": "Ja. Es gibt eine Rampe an der Tür, der Boden ist durchgehend eben, und die Waschbecken sind auf Rollstuhlhöhe. Sagen Sie es uns beim Buchen, und wir halten den Stuhl bei der Tür frei.",
+          "question": "Ist der Salon barrierefrei?"
+        },
+        {
+          "answer": "Ein paar, im Regal beim Tresen, und nur die, die wir selbst zu Hause benutzen würden. Niemand bringt Ihnen eines an den Stuhl.",
+          "question": "Verkaufen Sie die Produkte, die Sie verwenden?"
+        },
+        {
+          "answer": "Bitte. Ein Foto sagt in einer Sekunde, wofür man zehn Minuten Worte bräuchte — und dann sagen wir Ihnen ehrlich, was Ihr Haar kann und was nicht.",
+          "question": "Darf ich ein Foto von dem mitbringen, was ich möchte?"
+        }
+      ],
+      "title": "Gut zu wissen",
+      "type": "questions",
+      "v": 1
+    }
+  ],
+  "locale": "de",
+  "path": "/de/about",
+  "schema_version": 1,
+  "seo": {
+    "description": "Wie Atelier Nord entstand: eine ehemalige Druckerei an der Josefstrasse, drei Stühle, und wie wir arbeiten.",
+    "title": "Über den Salon"
+  }
+}

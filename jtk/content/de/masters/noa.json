@@ -1,0 +1,65 @@
+{
+  "blocks": [
+    {
+      "_key": "enoa",
+      "body": "Ich habe den Salon eröffnet, weil ich einen Raum wollte, in dem ein Haarschnitt ein Gespräch ist und kein Geschäft. Fünfzehn Jahre später beginne ich noch immer jeden Termin am Waschbecken und stelle noch immer dieselbe Frage: Was macht Ihr Haar an einem ganz gewöhnlichen Dienstag?\n\nFarbe ist mein Ding. Ich mische auf das Haar vor mir, nicht auf eine Farbkarte, und schicke Sie lieber eine Nuance heller nach Hause als mit einer, die Sie bereuen. Bringen Sie ein Foto mit, bringen Sie Zweifel mit — beides ist nützlich.\n\nIch arbeite Dienstag bis Samstag; der Montag gehört dem Garten.",
+      "cover": "noa",
+      "does": [
+        {
+          "service": "womens-cut"
+        },
+        {
+          "service": "colour"
+        },
+        {
+          "service": "highlights"
+        },
+        {
+          "service": "blow-dry"
+        },
+        {
+          "service": "keratin"
+        }
+      ],
+      "hours": [
+        {
+          "closes": 1080,
+          "day": "tuesday",
+          "opens": 540
+        },
+        {
+          "closes": 1080,
+          "day": "wednesday",
+          "opens": 540
+        },
+        {
+          "closes": 1080,
+          "day": "thursday",
+          "opens": 540
+        },
+        {
+          "closes": 1080,
+          "day": "friday",
+          "opens": 540
+        },
+        {
+          "closes": 900,
+          "day": "saturday",
+          "opens": 540
+        }
+      ],
+      "title": "Noa Keller",
+      "type": "master",
+      "v": 1
+    }
+  ],
+  "collection": "masters",
+  "locale": "de",
+  "path": "/de/masters/noa",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

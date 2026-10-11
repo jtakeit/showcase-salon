@@ -1,0 +1,76 @@
+---
+/**
+ * About the salon: two chapters, each words beside one photograph, then
+ * the questions. Read through the generic reader (docs/pages.md).
+ */
+import Layout from '../../layouts/Layout.astro';
+import Shot from '../../components/Shot.astro';
+import { readPage } from '../../lib/page';
+import { md } from '../../lib/md';
+import { localeParams, withLocale } from '../../lib/locale';
+
+export const getStaticPaths = localeParams;
+
+const locale = Astro.params.lang ?? '';
+
+const page = readPage(withLocale(locale, '/about'));
+const chapters = page.PAGE.map((of, at) => ({ of, at })).filter(({ of }) => of.type === 'story');
+const faq = page.block('questions');
+const text = (o: Record<string, unknown>, k: string): string => String(o[k] ?? '');
+---
+
+<Layout title={page.seo.title} description={page.seo.description} alternates={page.alternates}>
+  <main id="content">
+    {chapters.map(({ of, at }, i) => {
+      const shot = page.picture(of, at, 'image');
+      return (
+        <section class={`band ${i % 2 === 1 ? 'band--deep' : ''}`} data-reveal="settle">
+          <div class={`band__inner story ${i % 2 === 1 ? 'story--flip' : ''}`}>
+            <div>
+              {page.str(of, 'eyebrow') && (
+                <p class="eyebrow" data-jtk-path={page.pathAt(at, 'eyebrow')}>{page.str(of, 'eyebrow')}</p>
+              )}
+              {i === 0 ? (
+                <h1 data-jtk-path={page.pathAt(at, 'title')}>{page.str(of, 'title')}</h1>
+              ) : (
+                <h2 data-jtk-path={page.pathAt(at, 'title')}>{page.str(of, 'title')}</h2>
+              )}
+              {page.str(of, 'lead') && (
+                <p class="lead" data-jtk-path={page.pathAt(at, 'lead')}>{page.str(of, 'lead')}</p>
+              )}
+              <div class="prose" data-jtk-path={page.pathAt(at, 'body')} set:html={md(page.str(of, 'body'))} />
+            </div>
+            {shot.name && (
+              <Shot
+                name={shot.name}
+                alt={shot.alt}
+                path={shot.path}
+                class="story__shot"
+                ratio={i === 0 ? '4 / 5' : '3 / 2'}
+                width={900}
+                eager={i === 0}
+                sizes="(min-width: 56rem) 45vw, 92vw"
+              />
+            )}
+          </div>
+        </section>
+      );
+    })}
+
+    <section class="band" data-reveal="settle">
+      <div class="band__inner">
+        <h2 data-jtk-path={page.pathAt(faq.at, 'title')}>{page.str(faq.of, 'title')}</h2>
+        <ul class="faq">
+          {page.rows(faq.of, 'items').map((item, i) => (
+            <li>
+              <details>
+                <summary data-jtk-path={page.pathAt(faq.at, 'items', i, 'question')}>{text(item, 'question')}</summary>
+                <p data-jtk-path={page.pathAt(faq.at, 'items', i, 'answer')}>{text(item, 'answer')}</p>
+              </details>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </main>
+</Layout>

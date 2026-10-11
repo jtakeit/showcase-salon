@@ -1,0 +1,22 @@
+{
+  "blocks": [
+    {
+      "_key": "pwinter",
+      "body": "Summer colour is made for sun. The same highlights under a November sky in Zürich read as grey, and the roots that were charming in August are two months longer.\n\nOctober is when we bring colour down half a tone and closer to the roots — warmer, less contrast, so it grows out quietly through the dark months instead of needing a visit every five weeks.\n\n## If you have highlights\n\nA gloss over the top, no new lightening. It takes forty minutes, costs a fraction of a full colour, and lasts until the light comes back in March.\n\n## If you have an all-over colour\n\nThe same shade, one step warmer. The difference is invisible on the chart and obvious on your face in a café window.\n\nBook a full colour or highlights and say «winter» in the note; we know what you mean.",
+      "cover": "colour",
+      "date": "2026-10-01",
+      "excerpt": "The light goes flat from November; colour that worked in July looks tired by then. What Noa does about it.",
+      "title": "Colour before winter: what we recommend in October",
+      "type": "post",
+      "v": 1
+    }
+  ],
+  "collection": "blog",
+  "path": "/blog/winter-colour",
+  "schema_version": 1,
+  "seo": {
+    "description": "",
+    "title": ""
+  },
+  "visible": true
+}

@@ -1,0 +1,57 @@
+{
+  "blocks": [
+    {
+      "_key": "",
+      "buffer": 10,
+      "cancel_until": 180,
+      "combine": true,
+      "confirm": "auto",
+      "horizon": 60,
+      "hours": [
+        {
+          "closes": 1080,
+          "day": "monday",
+          "opens": 540
+        },
+        {
+          "closes": 1080,
+          "day": "tuesday",
+          "opens": 540
+        },
+        {
+          "closes": 1080,
+          "day": "wednesday",
+          "opens": 540
+        },
+        {
+          "closes": 1080,
+          "day": "thursday",
+          "opens": 540
+        },
+        {
+          "closes": 1080,
+          "day": "friday",
+          "opens": 540
+        },
+        {
+          "closes": 900,
+          "day": "saturday",
+          "opens": 540
+        }
+      ],
+      "kind": "salon",
+      "kit": "salon",
+      "kit_version": "2",
+      "lead": 60,
+      "page": "/services",
+      "payment": "no",
+      "scale": "hourly",
+      "slot_every": 15,
+      "type": "bookings_config",
+      "v": 1,
+      "zone": "Europe/Zurich"
+    }
+  ],
+  "module": "bookings",
+  "schema_version": 1
+}

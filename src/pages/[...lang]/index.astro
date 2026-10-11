@@ -1,0 +1,259 @@
+---
+/**
+ * The landing page of Atelier Nord.
+ *
+ * Composed by hand rather than through the generic bands: a hero on the
+ * dark wall, the price list read off the services collection, the three
+ * promises, the story with its photographs, the team off the masters
+ * collection, the form, the questions. Every field rendered carries its
+ * `data-jtk-path`; the entries' fields carry the page-qualified path the
+ * listing uses, so a tap on a price opens that service's own document.
+ */
+import Layout from '../../layouts/Layout.astro';
+import { siteCurrency } from '../../lib/site';
+import Hero from '../../components/Hero.astro';
+import HeroField from '../../components/motion/HeroField.astro';
+import Pattern from '../../components/surface/Pattern.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import Shot from '../../components/Shot.astro';
+import { copyFor } from '../../copy';
+import { readPage } from '../../lib/page';
+import { localeParams, langOf, withLocale } from '../../lib/locale';
+import { slugOf } from '../../lib/entries';
+import { md } from '../../lib/md';
+import { listed } from '../../lib/entries';
+import { money as priced } from '../../lib/money';
+import { under } from '../../lib/under';
+import design from '../../../jtk/design.json';
+
+export const getStaticPaths = localeParams;
+
+const locale = Astro.params.lang ?? '';
+const { HOME, STRIPS, block, str, rows, pathAt } = copyFor(locale);
+const own = readPage(withLocale(locale, '/'));
+
+const painted =
+  design.field !== '' && Array.isArray(design.colors) && design.colors.length === 4;
+const surface = design.surface ?? {};
+const grounded = Boolean(surface.pattern);
+const reveal = (surface.reveal || undefined) as string | undefined;
+
+const pledges = block('pledges');
+const story = block('text');
+const team = block('team');
+const faq = block('questions');
+
+// The work, as stacks behind three frames: the first of each stack shows.
+const WORK: { name: string; focus: string }[][] = [
+  [{ name: 'blow-dry', focus: '50% 50%' }, { name: 'tools', focus: '50% 50%' }, { name: 'wash', focus: '50% 40%' }],
+  [{ name: 'colour', focus: '50% 30%' }, { name: 'room-arches', focus: '50% 50%' }, { name: 'elif', focus: '50% 30%' }],
+  [{ name: 'bob', focus: '50% 20%' }, { name: 'hero-room', focus: '60% 50%' }, { name: 'jonas', focus: '50% 40%' }],
+];
+const services = await listed('services', locale);
+const masters = await listed('masters', locale);
+const servicesByID = new Map(services.map((one) => [slugOf(one), String(one.data.title ?? one.id)]));
+
+function length(minutes: number): string {
+  return minutes % 60 === 0 ? `${minutes / 60} h` : `${minutes} min`;
+}
+const money = (minor: number): string => priced(minor, siteCurrency, langOf(locale));
+const does = (entry: { data: Record<string, unknown> }): string =>
+  ((entry.data.does as { service: string }[] | undefined) ?? [])
+    .map((row) => servicesByID.get(row.service) ?? row.service)
+    .join(' · ');
+const ownHours = (entry: { data: Record<string, unknown> }): string => {
+  const hours = (entry.data.hours as { day: string }[] | undefined) ?? [];
+  if (hours.length === 0) return '';
+  const days = hours.map((row) => row.day.slice(0, 3).replace(/^./, (c) => c.toUpperCase()));
+  return `${days[0]}–${days[days.length - 1]}`;
+};
+const text = (o: Record<string, unknown>, k: string): string => String(o[k] ?? '');
+---
+
+<Layout title={HOME.title} description={HOME.description} suffix={false} alternates={own.alternates}>
+  {grounded && (
+    <Pattern
+      pattern={surface.pattern as never}
+      scope={(surface.scope || 'page') as never}
+      size={surface.size || undefined}
+      weight={surface.weight || undefined}
+      opacity={surface.opacity || undefined}
+      draw={surface.draw === true}
+    />
+  )}
+
+  <main id="content">
+    {painted ? (
+      <HeroField
+        field={design.field as never}
+        ground="var(--fl-ground)"
+        colors={['var(--fl-c1)', 'var(--fl-c2)', 'var(--fl-c3)', 'var(--fl-c4)']}
+        scrim={design.scrim !== false}
+        class="hero"
+      >
+        <Hero />
+      </HeroField>
+    ) : (
+      <section class="hero"><Hero /></section>
+    )}
+
+    {/* The price list, read off the collection: a tap on a line opens that
+        service's own document, which is what the page-qualified path says. */}
+    <section class="band band--prices" id="services" data-reveal={reveal} data-jtk-fixed>
+      <div class="band__inner">
+        <div class="band__head">
+          <div>
+            <p class="eyebrow">{STRIPS.services.eyebrow}</p>
+            <h2>{STRIPS.services.title}</h2>
+          </div>
+          <a class="more" href={under(withLocale(locale, '/services'))}>{STRIPS.services.all}</a>
+        </div>
+        <ul class="prices">
+          {services.map((entry) => (
+            <li class="price">
+              <h3 data-jtk-path={`page:${withLocale(locale, `/services/${slugOf(entry)}`)}:blocks[0].title`}>{String(entry.data.title ?? entry.id)}</h3>
+              {typeof entry.data.takes === 'number' && (
+                <p class="price__takes" data-jtk-path={`page:${withLocale(locale, `/services/${slugOf(entry)}`)}:blocks[0].takes`}>{length(entry.data.takes)}</p>
+              )}
+              {typeof entry.data.costs === 'number' && (
+                <span class="price__costs" data-jtk-path={`page:${withLocale(locale, `/services/${slugOf(entry)}`)}:blocks[0].costs`}>{money(entry.data.costs)}</span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="band band--deep band--pledges" data-reveal={reveal}>
+      <div class="band__inner">
+        {str(pledges.of, 'title') && (
+          <h2 data-jtk-path={pathAt(pledges.at, 'title')}>{str(pledges.of, 'title')}</h2>
+        )}
+        <ol class="pledges" data-reveal="stagger">
+          {rows(pledges.of, 'items').map((item, i) => (
+            <li class="pledge">
+              <h3 data-jtk-path={pathAt(pledges.at, 'items', i, 'title')}>{text(item, 'title')}</h3>
+              <p data-jtk-path={pathAt(pledges.at, 'items', i, 'text')}>{text(item, 'text')}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    {/* The story, beside the work: the words are the document's, the three
+        photographs are the design's — see docs/photos.md, «either a field or
+        the design». */}
+    <section class="band band--story" data-reveal={reveal}>
+      <div class="band__inner story">
+        <div>
+          <p class="eyebrow" data-jtk-fixed>{STRIPS.work.eyebrow}</p>
+          <h2 data-jtk-fixed>{STRIPS.work.title}</h2>
+          <div class="prose" data-jtk-path={pathAt(story.at, 'body')} set:html={md(str(story.of, 'body'))} />
+        </div>
+        {/* Three frames showing, the middle one a step lower, and more
+            behind them: every few seconds one frame turns to the next
+            photograph, so the three keep changing while the arrangement
+            stands still. Without script it is the first three, still. */}
+        <div class="work" data-reveal="develop" data-rotate>
+          {WORK.map((stack, i) => (
+            <div class="work__slot">
+              {stack.map((name, j) => (
+                <Shot
+                  name={name.name}
+                  ratio="4 / 5"
+                  width={600}
+                  focus={name.focus}
+                  sizes="(min-width: 56rem) 15vw, 45vw"
+                  class={j === 0 ? 'work__shot is-on' : 'work__shot'}
+                  decorative={j > 0}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="band band--dark band--team" data-reveal={reveal}>
+      <div class="band__inner">
+        <div class="band__head">
+          <div>
+            {str(team.of, 'eyebrow') && (
+              <p class="eyebrow" data-jtk-path={pathAt(team.at, 'eyebrow')}>{str(team.of, 'eyebrow')}</p>
+            )}
+            <h2 data-jtk-path={pathAt(team.at, 'title')}>{str(team.of, 'title')}</h2>
+            {str(team.of, 'lead') && (
+              <p class="lead" data-jtk-path={pathAt(team.at, 'lead')}>{str(team.of, 'lead')}</p>
+            )}
+          </div>
+          <a class="more" href={under(withLocale(locale, '/team'))} data-jtk-fixed>{STRIPS.team.all}</a>
+        </div>
+        <ul class="masters" data-reveal="stagger">
+          {masters.map((entry) => (
+            <li>
+              <a class="master" href={under(withLocale(locale, `/masters/${slugOf(entry)}`))}>
+                {typeof entry.data.cover === 'string' && entry.data.cover !== '' && (
+                  <Shot
+                    name={entry.data.cover}
+                    path={`page:${withLocale(locale, `/masters/${slugOf(entry)}`)}:blocks[0].cover`}
+                    ratio="4 / 5"
+                    width={720}
+                    focus="50% 30%"
+                    sizes="(min-width: 56rem) 30vw, 92vw"
+                  />
+                )}
+                <h3 data-jtk-path={`page:${withLocale(locale, `/masters/${slugOf(entry)}`)}:blocks[0].title`}>{String(entry.data.title ?? entry.id)}</h3>
+                {does(entry) && <p class="master__does" data-jtk-fixed>{does(entry)}</p>}
+                {ownHours(entry) && <p class="master__hours" data-jtk-fixed>{ownHours(entry)}</p>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="band band--deep band--cta_banner" id="contact" data-reveal={reveal}>
+      <div class="band__inner band__inner--form">
+        <LeadForm />
+      </div>
+    </section>
+
+    <section class="band" data-reveal={reveal}>
+      <div class="band__inner">
+        <h2 data-jtk-path={pathAt(faq.at, 'title')}>{str(faq.of, 'title')}</h2>
+        <ul class="faq">
+          {rows(faq.of, 'items').map((item, i) => (
+            <li>
+              <details>
+                <summary data-jtk-path={pathAt(faq.at, 'items', i, 'question')}>{text(item, 'question')}</summary>
+                <p data-jtk-path={pathAt(faq.at, 'items', i, 'answer')}>{text(item, 'answer')}</p>
+              </details>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  // The gallery's turn: one frame at a time, round the three, every few
+  // seconds — unless the person asked for less motion, or the page is not
+  // being looked at.
+  const work = document.querySelector<HTMLElement>('[data-rotate]');
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (work && !still) {
+    const slots = [...work.querySelectorAll<HTMLElement>('.work__slot')];
+    let turn = 0;
+    const next = () => {
+      if (document.hidden) return;
+      const slot = slots[turn % slots.length];
+      const shots = [...slot.querySelectorAll<HTMLElement>('.work__shot')];
+      const on = shots.findIndex((one) => one.classList.contains('is-on'));
+      shots[on]?.classList.remove('is-on');
+      shots[(on + 1) % shots.length]?.classList.add('is-on');
+      turn += 1;
+    };
+    window.setInterval(next, 2600);
+  }
+</script>
