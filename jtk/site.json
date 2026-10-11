@@ -1,5 +1,12 @@
 {
   "business": {
-    "currency": "chf"
-  }
+    "currency": "CHF"
+  },
+  "id": "a37859b8-e8e8-4aa4-86b3-3cee26591a24",
+  "locale": "en",
+  "media_base": "https://media.jtakeit.com/",
+  "name": "Atelier Nord",
+  "schema_version": 1,
+  "slug": "atelier-nord",
+  "vertical": "salon"
 }
