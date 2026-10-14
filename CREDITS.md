@@ -23,3 +23,6 @@ site's frames; nothing else was changed.
 The names in the copy — Noa, Elif, Jonas and the customers — belong to nobody
 in these pictures. The address has no house number and the telephone number
 (044 000 00 00) is not one that can be dialled.
+
+The photographs are not covered by the MIT licence in [LICENSE](LICENSE), which
+covers the code and the words; they stay under the Pexels License.
