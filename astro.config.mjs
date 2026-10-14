@@ -17,8 +17,7 @@ const SITE = env.SITE_URL ?? 'http://localhost:4321/';
  * The path this build is served under, taken from SITE_URL rather than
  * configured beside it.
  *
- * **Without this the preview is a bare document, and it took three separate
- * afternoons to see why.** A site's own address is a host — assets come out as
+ * **Without this the preview is a bare document.** A site's own address is a host — assets come out as
  * `/_astro/style.css` and resolve — but the studio's preview serves the same
  * build under `https://preview…/p/<slug>/`, where that path is not the site's
  * root and every stylesheet, every script and every image asks for something

@@ -206,8 +206,8 @@ const businessSchema = {
       content={INDEXABLE ? 'index, follow, max-image-preview:large' : 'noindex, nofollow'}
     />
 
-    {/* TODO(prod): Search Console ownership. Independent of robots — Google
-        fetches the page directly to verify, so noindex does not block it. */}
+    {/* Search Console ownership, when the site has one. Independent of robots —
+        Google fetches the page directly to verify, so noindex does not block it. */}
     {/* <meta name="google-site-verification" content="" /> */}
 
     <meta property="og:type" content="website" />

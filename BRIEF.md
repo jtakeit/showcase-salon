@@ -26,8 +26,8 @@ Book a time.
 | Photographs | from Pexels, credited in CREDITS.md | developer |
 | The mark | «AN» in paper on ink with a copper dot, drawn for the sample (`public/favicon.svg`), not the scaffold's monogram | developer, 10 October 2026 |
 | Slug | atelier-nord | `jtk/site.json` |
-| Repository | `fastlane-sites-stg/showcase-salon`; its public twin is `jtakeit/showcase-salon` | developer |
-| Domain | NEEDS CLIENT — none in the repository | — |
+| Repository | `jtakeit/showcase-salon` | developer |
+| Address | https://atelier-nord-8c4b.jtakeit.site — the platform's own address; no custom domain | developer |
 
 ### Services
 | Service | Takes | Costs |

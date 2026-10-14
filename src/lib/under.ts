@@ -8,8 +8,7 @@
  * studio's preview the same build is served under `https://preview…/p/<slug>/`,
  * where the root is not the site: every one of those addresses leaves it. What
  * a person sees is a page with no stylesheet, no pictures and navigation that
- * 404s — which reads as a broken build rather than as a wrong prefix, and has
- * cost three separate afternoons to diagnose from that symptom.
+ * 404s — which reads as a broken build rather than as a wrong prefix.
  *
  * Astro's `base` fixes what *it* emits — the bundled CSS, the optimised
  * images — and it cannot fix a string somebody typed. So every internal

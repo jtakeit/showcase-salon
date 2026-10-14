@@ -1307,7 +1307,7 @@ export const MODULES: Modules = {
  * And it is a warning rather than a refusal. A site without it goes live and
  * somebody is told. The only thing publishing refuses over is a form with
  * nowhere to send what people write in it, which is a broken product rather
- * than an opinion about anybody's legal position. See wiki/34.
+ * than an opinion about anybody's legal position.
  */
 export const PROCESSING_URL = 'https://jtakeit.com/processing';
 

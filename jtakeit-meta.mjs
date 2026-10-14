@@ -26,7 +26,7 @@ export function jtakeitMeta() {
     name: 'jtakeit-meta',
     hooks: {
       // `/_jtk/progress.json` on the dev server: where the site is, read off
-      // the files on every request (jtakeit-core, wiki/73). The panel reads it
+      // the files on every request. The panel reads it
       // through a dev session the way it reads the pages, from the same
       // machine; `jtkit progress` prints the same reading for the agent. Open
       // to any origin because the panel is on another one, and because
