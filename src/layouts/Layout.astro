@@ -118,9 +118,9 @@ if (DESIGN.paper) palette['--paper'] = DESIGN.paper;
 if (DESIGN.paper) palette['--lift'] = invertedPage ? 'var(--ink)' : '#ffffff';
 if (DESIGN.ink) palette['--ink'] = DESIGN.ink;
 if (DESIGN.accent) palette['--accent'] = DESIGN.accent;
-if (DESIGN.ground) palette['--fl-ground'] = DESIGN.ground;
+if (DESIGN.ground) palette['--jtk-ground'] = DESIGN.ground;
 (DESIGN.colors ?? []).forEach((colour: string, i: number) => {
-  if (colour) palette[`--fl-c${i + 1}`] = colour;
+  if (colour) palette[`--jtk-c${i + 1}`] = colour;
 });
 
 /*

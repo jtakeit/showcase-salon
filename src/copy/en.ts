@@ -65,5 +65,5 @@ export const EN: Strings = {
 };
 
 export const COPY = makeCopy(page, EN);
-export const { META, HOME, FORM, NAV, FOOTER, STRIPS, PRIVACY, A11Y, PAGE, block, str, rows, picture, gallery, flPath, pathAt } = COPY;
+export const { META, HOME, FORM, NAV, FOOTER, STRIPS, PRIVACY, A11Y, PAGE, block, str, rows, picture, gallery, jtkPath, pathAt } = COPY;
 export type { Shown } from './make';

@@ -65,4 +65,4 @@ export const DE: Strings = {
 };
 
 export const COPY = makeCopy(page, DE);
-export const { META, HOME, FORM, NAV, FOOTER, STRIPS, PRIVACY, A11Y, PAGE, block, str, rows, picture, gallery, flPath, pathAt } = COPY;
+export const { META, HOME, FORM, NAV, FOOTER, STRIPS, PRIVACY, A11Y, PAGE, block, str, rows, picture, gallery, jtkPath, pathAt } = COPY;

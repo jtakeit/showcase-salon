@@ -36,7 +36,7 @@
  * layout is not — and that decision is yours to make per field rather than
  * something a framework makes for you.
  *
- * `fl-catalogue` emits the JSON and then checks it against the built HTML: every
+ * `jtk catalogue` emits the JSON and then checks it against the built HTML: every
  * field declared here has to appear on the page carrying its `data-jtk-path`,
  * and every annotated path on the page has to be declared here. The two cannot
  * drift, which is what stops an owner tapping a heading that never opens.
@@ -71,7 +71,7 @@
  *
  * The strings a visitor sees are the other way round: those are in
  * `src/copy/`, they are interface rather than seed, nothing rewrites them, and
- * `fl-init` fills them in per locale.
+ * `jtk create` fills them in per locale.
  */
 
 /**
@@ -645,7 +645,7 @@ export const BLOCKS: Block[] = [
  *   src/pages/blog/index.astro      the listing — an ordinary page of yours
  *   src/pages/blog/[...slug].astro  one entry, from the content collection
  *
- * `fl-catalogue` checks the declaration; the build checks the rendering, the
+ * `jtk catalogue` checks the declaration; the build checks the rendering, the
  * same way it checks every other annotated field.
  *
  * ── the reserved keys ───────────────────────────────────────────────────────
@@ -1270,7 +1270,7 @@ export const MODULES: Modules = {
  * The language this site is written in.
  *
  * `META.lang` in `src/copy/` is this value, and `<html lang>` is that — one
- * declaration, read by the page and by the platform. Set by `fl-init`; change
+ * declaration, read by the page and by the platform. Set by `jtk create`; change
  * it only if the site itself changes language.
  *
  * It is here, beside the others, because **a site declares every language it
@@ -1332,7 +1332,7 @@ export const LOCALE = 'en';
  *
  * The whole address is the same in every language, with the language in front.
  * That is what pairs the two — nothing is declared, so nothing can be misspelt,
- * and `fl-check` can answer "are these the same page" by looking. The price is
+ * and `jt-check` can answer "are these the same page" by looking. The price is
  * one segment of one address reading in the site's own language.
  */
 export const LOCALES: string[] = ['de'];

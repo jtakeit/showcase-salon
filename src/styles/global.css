@@ -346,18 +346,18 @@ h1 {
  * what a body can look like was decided once by the kit rather than again by
  * every site, and the editor can only offer what exists here.
  */
-.fl-figure {
+.jtk-figure {
   margin: 2rem 0;
 }
 
-.fl-figure img {
+.jtk-figure img {
   display: block;
   inline-size: 100%;
   block-size: auto;
   border-radius: var(--radius, 0);
 }
 
-.fl-figure figcaption {
+.jtk-figure figcaption {
   margin-top: 0.6rem;
   font-size: 0.875rem;
   line-height: 1.5;
@@ -369,20 +369,20 @@ h1 {
  * phone are three photographs, not three stamps. `--3` and `--4` say how many
  * were asked for; how many actually fit is the screen's to decide.
  */
-.fl-row {
+.jtk-row {
   display: grid;
   gap: clamp(0.5rem, 1.5vw, 1rem);
   grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
   margin: 2rem 0;
 }
 
-.fl-row .fl-figure {
+.jtk-row .jtk-figure {
   margin: 0;
 }
 
 /* Two is the one count that must not wrap on a small screen: a pair is a
    comparison, and a comparison stacked is two pictures. */
-.fl-row--2 {
+.jtk-row--2 {
   grid-template-columns: repeat(2, 1fr);
 }
 
@@ -574,7 +574,7 @@ h3 {
   background: var(--ink);
 }
 .hero .eyebrow {
-  color: var(--fl-c2, var(--accent));
+  color: var(--jtk-c2, var(--accent));
 }
 .hero .lead {
   color: color-mix(in srgb, var(--paper) 78%, transparent);
@@ -652,10 +652,10 @@ h3 {
   color: color-mix(in srgb, var(--paper) 62%, transparent);
 }
 .band--dark .master__hours {
-  color: var(--fl-c2, var(--accent));
+  color: var(--jtk-c2, var(--accent));
 }
 .band--dark .eyebrow {
-  color: var(--fl-c2, var(--accent));
+  color: var(--jtk-c2, var(--accent));
 }
 .band--dark .lead,
 .band--dark .quiet {
@@ -726,7 +726,7 @@ h3 {
   color: color-mix(in srgb, var(--paper) 60%, transparent);
 }
 .band--dark .price__costs {
-  color: var(--fl-c2, var(--accent));
+  color: var(--jtk-c2, var(--accent));
 }
 
 /* the three promises */
@@ -1161,7 +1161,7 @@ form.lead[data-state='sent'] .lead__foot .btn {
   font-family: system-ui, sans-serif;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--fl-c2, var(--accent));
+  color: var(--jtk-c2, var(--accent));
   margin: 0 0 0.6rem;
 }
 .facts p {

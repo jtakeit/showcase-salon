@@ -94,7 +94,7 @@ export function makeCopy(page: HomeDocument, S: Strings) {
     return item === undefined ? `blocks[${at}].${field}` : `blocks[${at}].${field}[${item}].${subField}`;
   };
 
-  const flPath = (type: string, field: string, item?: number, subField?: string): string | undefined => {
+  const jtkPath = (type: string, field: string, item?: number, subField?: string): string | undefined => {
     if (!ANNOTATE) return undefined;
     const { at } = block(type);
     if (at === -1) return undefined;
@@ -167,7 +167,7 @@ export function makeCopy(page: HomeDocument, S: Strings) {
     rows,
     picture,
     gallery,
-    flPath,
+    jtkPath,
     pathAt,
   };
 }
